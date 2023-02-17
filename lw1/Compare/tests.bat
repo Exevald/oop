@@ -24,13 +24,17 @@ REM Сравниваем два разных файла
 fc output_diff.txt "%TEMP%\output.txt" > nul || goto err
 echo Test 3 passed
 
+REM Сравниваем отсутсвующие файлы, программа должна прекратить работу
+%MyProgram% MissingFile.txt MissingFile.txt && goto err
+echo Test 5 passed
+
 REM Не задан один из файлов для сравнения, программа должна прекратить работу
 %MyProgram% input1_ok.txt && goto err
-echo Test 4 passed
+echo Test 6 passed
 
 REM Не заданы оба файла для сравнения, программа должна прекратить работу
 %MyProgram% && goto err
-echo Test 5 passed
+echo Test 7 passed
 
 REM Тесты прошли успешно
 echo All tests passed successfully
