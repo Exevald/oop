@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CopyFile", "CopyFile\CopyFi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Compare", "Compare\Compare.vcxproj", "{74B84810-4EA2-45A3-A355-DD8E5A53D040}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Replace", "Replace\Replace.vcxproj", "{D46ED914-6217-4C54-8438-401BA535C1EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{74B84810-4EA2-45A3-A355-DD8E5A53D040}.Release|x64.Build.0 = Release|x64
 		{74B84810-4EA2-45A3-A355-DD8E5A53D040}.Release|x86.ActiveCfg = Release|Win32
 		{74B84810-4EA2-45A3-A355-DD8E5A53D040}.Release|x86.Build.0 = Release|Win32
+		{D46ED914-6217-4C54-8438-401BA535C1EC}.Debug|x64.ActiveCfg = Debug|x64
+		{D46ED914-6217-4C54-8438-401BA535C1EC}.Debug|x64.Build.0 = Debug|x64
+		{D46ED914-6217-4C54-8438-401BA535C1EC}.Debug|x86.ActiveCfg = Debug|Win32
+		{D46ED914-6217-4C54-8438-401BA535C1EC}.Debug|x86.Build.0 = Debug|Win32
+		{D46ED914-6217-4C54-8438-401BA535C1EC}.Release|x64.ActiveCfg = Release|x64
+		{D46ED914-6217-4C54-8438-401BA535C1EC}.Release|x64.Build.0 = Release|x64
+		{D46ED914-6217-4C54-8438-401BA535C1EC}.Release|x86.ActiveCfg = Release|Win32
+		{D46ED914-6217-4C54-8438-401BA535C1EC}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
