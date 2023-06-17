@@ -139,6 +139,8 @@
   <ItemGroup>
     <Text Include="test-data\favourite-language-replace-php-with-golang.txt" />
     <Text Include="test-data\favourite-language.txt" />
+    <Text Include="test-data\mother-replace-ma-with-mama.txt" />
+    <Text Include="test-data\mother.txt" />
     <Text Include="test-data\number-string.txt" />
     <Text Include="test-data\number-string-replace-1231234-with-111.txt" />
   </ItemGroup>
