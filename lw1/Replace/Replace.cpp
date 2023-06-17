@@ -27,18 +27,22 @@ std::optional<Args> ParseArguments(int argc, char* argv[])
 	return args;
 }
 
-std::string ReplaceString(const std::string& subject, const std::string& searchString, const std::string& replacementString)
-{
-	if (searchString.empty()) {
+std::string ReplaceString(const std::string& subject, const std::string& searchString, const std::string& replacementString) {
+	if (searchString.empty())
+	{
 		return subject;
 	}
+	std::string result;
 	size_t pos = 0;
-	std::string result = subject;
-
-	while ((pos = result.find(searchString, pos)) != std::string::npos) {
-		result.replace(pos, searchString.length(), replacementString);
-		pos += replacementString.length();
+	size_t lastPos = 0;
+	while ((pos = subject.find(searchString, pos)) != std::string::npos)
+	{
+		result.append(subject.substr(lastPos, pos - lastPos));
+		result.append(replacementString);
+		pos += searchString.length();
+		lastPos = pos;
 	}
+	result.append(subject.substr(lastPos));
 	return result;
 }
 
