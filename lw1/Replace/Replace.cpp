@@ -78,6 +78,9 @@ int CopyFileWithReplacement(std::string& inputFileName, std::string& outputFileN
 	}
 
 	CopyStreamWithReplacement(inputFile, outputFile, searchString, replacementString);
+	outputFile.flush();
+
+	return EXIT_SUCCESS;
 }
 
 int main(int argc, char* argv[])
@@ -88,6 +91,5 @@ int main(int argc, char* argv[])
 		return EXIT_FAILURE;
 	}
 
-	CopyFileWithReplacement(args->inputFileName, args->outputFileName, args->searchString, args->replaceString);
-	return EXIT_SUCCESS;
+	return CopyFileWithReplacement(args->inputFileName, args->outputFileName, args->searchString, args->replaceString);
 }
