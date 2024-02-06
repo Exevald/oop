@@ -1,7 +1,7 @@
-#include <iostream>
 #include <fstream>
-#include <string>
+#include <iostream>
 #include <optional>
+#include <string>
 
 struct Args
 {
@@ -25,7 +25,7 @@ std::optional<Args> ParseArguments(int argc, char* argv[])
 
 void CompareFiles(std::ifstream& firstInput, std::ifstream& secondInput)
 {
-	//Сравнение двух файлов
+	// Сравнение двух файлов
 	char ch1, ch2;
 	int stringNumFirstFile = 1, stringNumSecondFile = 1;
 	bool isDiff = false;
@@ -33,7 +33,7 @@ void CompareFiles(std::ifstream& firstInput, std::ifstream& secondInput)
 	{
 		if (ch1 != ch2)
 		{
-			isDiff = true;  
+			isDiff = true;
 			break;
 		}
 		if (ch1 == '\n')
@@ -47,7 +47,8 @@ void CompareFiles(std::ifstream& firstInput, std::ifstream& secondInput)
 	}
 	if (isDiff)
 	{
-		std::cout << "Files are different." << " Line number is " << std::max(stringNumFirstFile, stringNumSecondFile) << std::endl;
+		std::cout << "Files are different."
+				  << " Line number is " << std::max(stringNumFirstFile, stringNumSecondFile) << std::endl;
 	}
 	else
 	{

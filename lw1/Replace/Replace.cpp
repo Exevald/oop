@@ -1,7 +1,7 @@
-﻿#include <iostream>
-#include <fstream>
-#include <string>
+﻿#include <fstream>
+#include <iostream>
 #include <optional>
+#include <string>
 
 struct Args
 {
@@ -16,7 +16,7 @@ std::optional<Args> ParseArguments(int argc, char* argv[])
 	if (argc != 5)
 	{
 		std::cout << "Invalid argument count" << std::endl
-			<< "Usage: replace.exe <inputFile> <outputFile> <searchString> <replacementString>" << std::endl;
+				  << "Usage: replace.exe <inputFile> <outputFile> <searchString> <replacementString>" << std::endl;
 		return std::nullopt;
 	}
 	Args args;
@@ -27,7 +27,8 @@ std::optional<Args> ParseArguments(int argc, char* argv[])
 	return args;
 }
 
-std::string ReplaceString(const std::string& subject, const std::string& searchString, const std::string& replacementString) {
+std::string ReplaceString(const std::string& subject, const std::string& searchString, const std::string& replacementString)
+{
 	if (searchString.empty())
 	{
 		return subject;
@@ -77,7 +78,6 @@ int CopyFileWithReplacement(std::string& inputFileName, std::string& outputFileN
 	}
 
 	CopyStreamWithReplacement(inputFile, outputFile, searchString, replacementString);
-
 }
 
 int main(int argc, char* argv[])
