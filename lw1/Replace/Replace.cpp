@@ -24,6 +24,7 @@ std::optional<Args> ParseArguments(int argc, char* argv[])
 	args.outputFileName = argv[2];
 	args.searchString = argv[3];
 	args.replaceString = argv[4];
+
 	return args;
 }
 
@@ -38,12 +39,15 @@ std::string ReplaceString(const std::string& subject, const std::string& searchS
 	size_t lastPos = 0;
 	while ((pos = subject.find(searchString, pos)) != std::string::npos)
 	{
-		result.append(subject.substr(lastPos, pos - lastPos));
-		result.append(replacementString);
+		std::string previousString(subject.begin() + lastPos, subject.begin() + pos);
+		result += previousString;
+		result += replacementString;
 		pos += searchString.length();
 		lastPos = pos;
 	}
-	result.append(subject.substr(lastPos));
+	std::string endOfString(subject.begin() + lastPos, subject.end());
+	result += endOfString;
+
 	return result;
 }
 
@@ -57,7 +61,7 @@ void CopyStreamWithReplacement(std::istream& input, std::ostream& output, const 
 	}
 }
 
-int CopyFileWithReplacement(std::string& inputFileName, std::string& outputFileName, const std::string& searchString, const std::string& replacementString)
+bool CopyFileWithReplacement(const std::string& inputFileName, const std::string& outputFileName, const std::string& searchString, const std::string& replacementString)
 {
 	std::ifstream inputFile;
 	inputFile.open(inputFileName);
@@ -67,20 +71,22 @@ int CopyFileWithReplacement(std::string& inputFileName, std::string& outputFileN
 
 	if (!inputFile.is_open())
 	{
-		std::cout << "Failed to open " << inputFileName << " for reading" << std::endl;
-		return EXIT_FAILURE;
+		throw std::invalid_argument("Failed to open " + inputFileName + " for reading");
 	}
 
 	if (!outputFile.is_open())
 	{
-		std::cout << "Failed to open " << outputFileName << " for writing" << std::endl;
-		return EXIT_FAILURE;
+		throw std::invalid_argument("Failed to open " + outputFileName + " for writing");
 	}
 
 	CopyStreamWithReplacement(inputFile, outputFile, searchString, replacementString);
-	outputFile.flush();
 
-	return EXIT_SUCCESS;
+	if (!outputFile.flush())
+	{
+		throw std::invalid_argument("Failed to save data on disk");
+	}
+
+	return true;
 }
 
 int main(int argc, char* argv[])
@@ -90,6 +96,9 @@ int main(int argc, char* argv[])
 	{
 		return EXIT_FAILURE;
 	}
-
-	return CopyFileWithReplacement(args->inputFileName, args->outputFileName, args->searchString, args->replaceString);
+	if (!CopyFileWithReplacement(args->inputFileName, args->outputFileName, args->searchString, args->replaceString))
+	{
+		return EXIT_FAILURE;
+	}
+	return EXIT_SUCCESS;
 }

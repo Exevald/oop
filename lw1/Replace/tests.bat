@@ -14,24 +14,29 @@ REM Ќе заданы файлы дл€ ввода и вывода, программа должна прекратить работу
 echo Test 1 passed
 
 REM ѕри запуске с правильными параметрами ожидаетс€ ненулевой код возврата
+%MyProgram% test-data\favourite-language.txt "%TEMP%\favourite-language.txt" "" GO || goto err
+fc test-data\favourite-language.txt "%TEMP%\favourite-language.txt" > nul || goto err
+echo Test 2 passed
+
+REM ѕри запуске с правильными параметрами ожидаетс€ ненулевой код возврата
 %MyProgram% test-data\favourite-language.txt "%TEMP%\favourite-language.txt" PHP GO || goto err
 fc test-data\favourite-language-replace-php-with-golang.txt "%TEMP%\favourite-language.txt" > nul || goto err
-echo Test 2 passed
+echo Test 3 passed
 
 REM ѕри ненахождении подстроки в строке программа должна вывести искомый текст
 %MyProgram% test-data\favourite-language.txt "%TEMP%\favourite-language.txt" Python GO || goto err
 fc test-data\favourite-language.txt "%TEMP%\favourite-language.txt" > nul || goto err
-echo Test 3 passed
+echo Test 4 passed
 
 REM ѕроверка на отсутствие зацикливани€ программы при замене 1231234 в строке 12312312345 
 %MyProgram% test-data\number-string.txt "%TEMP%\number-string.txt" 1231234 111 || goto err
 fc test-data\number-string-replace-1231234-with-111.txt "%TEMP%\number-string.txt" > nul || goto err
-echo Test 4 passed
+echo Test 5 passed
 
 REM ѕроверка на отсутствие зацикливани€ программы при замене ma в строке mama
 %MyProgram% test-data\mother.txt "%TEMP%\mother.txt" ma mama || goto err
 fc test-data\mother-replace-ma-with-mama.txt "%TEMP%\mother.txt" > nul || goto err
-echo Test 5 passed
+echo Test 6 passed
 
 REM “есты прошли успешно
 echo All tests passed successfully
