@@ -96,9 +96,13 @@ int main(int argc, char* argv[])
 	{
 		return EXIT_FAILURE;
 	}
-	if (!CopyFileWithReplacement(args->inputFileName, args->outputFileName, args->searchString, args->replaceString))
+	try
 	{
-		return EXIT_FAILURE;
+		CopyFileWithReplacement(args->inputFileName, args->outputFileName, args->searchString, args->replaceString);
+	}
+	catch (std::exception exception)
+	{
+		std::cout << exception.what() << std::endl;
 	}
 	return EXIT_SUCCESS;
 }
