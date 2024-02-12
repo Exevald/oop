@@ -1,0 +1,41 @@
+#include <iostream>
+#include <cmath>
+
+int convertToDecimal(const std::string& number, int base) {
+    int decimalNumber = 0;
+    int power = 0;
+
+    // Итерируемся по символам числа в обратном порядке
+    for (int i = number.size() - 1; i >= 0; --i) {
+        char digit = number[i];
+
+        // Проверяем, является ли символ цифрой или буквой (если система счисления > 10)
+        int digitValue = (isdigit(digit)) ? (digit - '0') : (tolower(digit) - 'a' + 10);
+
+        // Умножаем значение цифры на основание системы счисления, возведенное в степень
+        decimalNumber += digitValue * pow(base, power);
+        
+        // Увеличиваем степень
+        ++power;
+    }
+
+    return decimalNumber;
+}
+
+int main() {
+    // Пример использования функции
+    std::string number;
+    int base;
+
+    std::cout << "Введите число: ";
+    std::cin >> number;
+
+    std::cout << "Введите основание системы счисления: ";
+    std::cin >> base;
+
+    int decimalNumber = convertToDecimal(number, base);
+
+    std::cout << "Десятичное представление: " << decimalNumber << std::endl;
+
+    return 0;
+}
