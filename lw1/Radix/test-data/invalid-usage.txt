@@ -1,0 +1,2 @@
+Invalid arguments count
+Usage: radix.exe <source notation> <destination notation> <value>

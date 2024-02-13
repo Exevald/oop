@@ -25,29 +25,6 @@ std::optional<Args> ParseArgs(int argc, char* argv[])
 	return args;
 }
 
-bool isValueCorrect(const std::string& str)
-{
-	const char negativeSymbol = '-';
-	const std::string alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-	bool isValueInvalid = (str[0] == '0' || (str[0] == negativeSymbol && str[1] == '0')) && (str.size() >= 2);
-	bool isFirstSymbolInvalid = (str[0] != negativeSymbol) && (alphabet.find(str[0]) == std::string::npos);
-
-	if (str.empty() || isValueInvalid || isFirstSymbolInvalid)
-	{
-		return false;
-	}
-	for (size_t i = 1; i < str.size(); i++)
-	{
-		if ((alphabet.find(str[i]) == std::string::npos))
-		{
-			return false;
-		}
-	}
-
-	return true;
-}
-
 bool HandleError(const bool& errInvalidArgument, const bool& errValueOverflow)
 {
 	if (errInvalidArgument)
@@ -64,68 +41,58 @@ bool HandleError(const bool& errInvalidArgument, const bool& errValueOverflow)
 	return false;
 }
 
-int StringToInt(const std::string& str, const int& radix, bool& wasError)
+int StringToInt(const std::string& str, const int& radix, bool& errInvalidArgument, bool& errValueOverflow)
 {
-	int digit;
-	if (!isValueCorrect(str))
+	int value = 0;
+	if (str == "0")
 	{
-		wasError = true;
 		return 0;
 	}
-	int result = 0;
-	for (size_t i = 0; i < str.size(); i++)
+	try
 	{
-		if (isdigit(str[i]))
-		{
-			digit = str[i] - '0';
-		}
-		else
-		{
-			digit = tolower(str[i]) - 'a' + 10;
-		}
-		if (digit >= radix)
-		{
-			wasError = true;
-			return 0;
-		}
-		if (result > (INT_MAX - digit) / radix)
-		{
-			wasError = true;
-			return 0;
-		}
-		result = result * radix + digit;
+		value = std::stoi(str, 0, radix);
 	}
-
-	return result;
+	catch (std::invalid_argument&)
+	{
+		errInvalidArgument = true;
+		return 0;
+	}
+	catch (std::out_of_range&)
+	{
+		errValueOverflow = true;
+		return 0;
+	}
+	return value;
 }
 
-std::string IntToString(int n, const int& radix)
+std::string IntToString(int n, const int& radix, bool& wasError)
 {
-	std::string alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	std::string vocabulary = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	std::string result;
+	if (n < 0 || n > INT_MAX)
+	{
+		wasError = true;
+	}
 	while (n > 0)
 	{
-		result = alphabet[n % radix] + result;
+		result = vocabulary[n % radix] + result;
 		n /= radix;
 	}
 
 	return result;
 }
 
-int ConvertNotation(const std::string& notation, bool& wasError)
+int ConvertNotation(const std::string& notation, bool& errInvalidArgument, bool& errValueOverflow)
 {
 	const int minNotation = 2;
 	const int maxNotation = 36;
 
-	if (!isValueCorrect(notation))
-	{
-		wasError = true;
-	}
-	int convertedNotatiion = StringToInt(notation, 10, wasError);
+	int convertedNotatiion = StringToInt(notation, 10, errInvalidArgument, errValueOverflow);
 	bool isNotationCorrect = (convertedNotatiion >= minNotation) || (convertedNotatiion <= maxNotation);
 	if (!isNotationCorrect)
 	{
-		wasError = true;
+		errValueOverflow = true;
+		return 0;
 	}
 
 	return convertedNotatiion;
@@ -135,13 +102,14 @@ bool ConvertValueToNotation(const std::string& sourceNotation, const std::string
 {
 	bool errInvalidArgument = false;
 	bool errValueOverflow = false;
+	std::string resultInDestinationNotation;
 
-	int convertedSourceNotation = ConvertNotation(sourceNotation, errValueOverflow);
+	int convertedSourceNotation = ConvertNotation(sourceNotation, errInvalidArgument, errValueOverflow);
 	if (HandleError(errInvalidArgument, errValueOverflow))
 	{
 		return false;
 	}
-	int convertedDestinationNotation = ConvertNotation(destinationNotation, errValueOverflow);
+	int convertedDestinationNotation = ConvertNotation(destinationNotation, errInvalidArgument, errValueOverflow);
 	if (HandleError(errInvalidArgument, errValueOverflow))
 	{
 		return false;
@@ -149,22 +117,30 @@ bool ConvertValueToNotation(const std::string& sourceNotation, const std::string
 
 	bool isNegative = false;
 	const char negativeSymbol = '-';
-	if (str[0] == negativeSymbol)
+	if (str[0] == negativeSymbol && str.size() > 2 && str[1] != '0')
 	{
 		isNegative = true;
 		str.erase(0, 1);
 	}
-	int valueInDecimalNotation = StringToInt(str, convertedSourceNotation, errValueOverflow);
+	int valueInDecimalNotation = StringToInt(str, convertedSourceNotation, errInvalidArgument, errValueOverflow);
 	if (HandleError(errInvalidArgument, errValueOverflow))
 	{
 		return false;
 	}
-	std::string valueInDestinationNotation = IntToString(valueInDecimalNotation, convertedDestinationNotation);
+	resultInDestinationNotation = IntToString(valueInDecimalNotation, convertedDestinationNotation, errValueOverflow);
+	if (HandleError(errInvalidArgument, errValueOverflow))
+	{
+		return false;
+	}
+	if (valueInDecimalNotation == 0)
+	{
+		resultInDestinationNotation = "0";
+	}
 	if (isNegative)
 	{
-		valueInDestinationNotation = negativeSymbol + valueInDestinationNotation;
+		resultInDestinationNotation = negativeSymbol + resultInDestinationNotation;
 	}
-	std::cout << "Value in destination notation: " << valueInDestinationNotation << std::endl;
+	std::cout << "Value in destination notation: " << resultInDestinationNotation << std::endl;
 
 	return true;
 }
@@ -183,6 +159,6 @@ int main(int argc, char* argv[])
 	{
 		return EXIT_FAILURE;
 	}
-
+	
 	return EXIT_SUCCESS;
 }
