@@ -31,6 +31,7 @@ echo Test 4 passed
 
 REM ѕеревод числа из двоичной системы счислени€ в дес€тичную систему счислени€
 %MyProgram% 2 10 101 > "%TEMP%\output.txt" || goto err
+rem ѕомен€ть название файла на ожидаемый результат
 fc test-data\convert-value-to-decimal-notation.txt "%TEMP%\output.txt" > nul || goto err 
 echo Test 5 passed
 
@@ -53,6 +54,8 @@ REM „исло превышает максимальное значение типа int. ѕрограмма должна прекратить 
 %MyProgram% 10 16 2147483650 > "%TEMP%\output.txt" && goto err
 fc test-data\value-overflow.txt "%TEMP%\output.txt" > nul || goto err 
 echo Test 9 passed
+
+rem при проверки граничных условий провер€ть граничное, и ближайшее к граничному + добавить тест дл€ int_min
 
 REM “есты прошли успешно
 echo All tests passed successfully
