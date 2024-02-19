@@ -39,6 +39,7 @@ std::string ReplaceString(const std::string& subject, const std::string& searchS
 	size_t lastPos = 0;
 	while ((pos = subject.find(searchString, pos)) != std::string::npos)
 	{
+		// Не использовать итераторы. Использовать append
 		std::string previousString(subject.begin() + lastPos, subject.begin() + pos);
 		result += previousString;
 		result += replacementString;
@@ -59,9 +60,13 @@ void CopyStreamWithReplacement(std::istream& input, std::ostream& output, const 
 	{
 		output << ReplaceString(line, searchString, replacementString) << std::endl;
 	}
+	if (!input.eof())
+	{
+		throw std::runtime_error("Failed to read text from file");
+	}
 }
 
-bool CopyFileWithReplacement(const std::string& inputFileName, const std::string& outputFileName, const std::string& searchString, const std::string& replacementString)
+void CopyFileWithReplacement(const std::string& inputFileName, const std::string& outputFileName, const std::string& searchString, const std::string& replacementString)
 {
 	std::ifstream inputFile;
 	inputFile.open(inputFileName);
@@ -71,22 +76,20 @@ bool CopyFileWithReplacement(const std::string& inputFileName, const std::string
 
 	if (!inputFile.is_open())
 	{
-		throw std::invalid_argument("Failed to open " + inputFileName + " for reading");
+		throw std::runtime_error("Failed to open " + inputFileName + " for reading");
 	}
 
 	if (!outputFile.is_open())
 	{
-		throw std::invalid_argument("Failed to open " + outputFileName + " for writing");
+		throw std::runtime_error("Failed to open " + outputFileName + " for writing");
 	}
 
 	CopyStreamWithReplacement(inputFile, outputFile, searchString, replacementString);
 
 	if (!outputFile.flush())
 	{
-		throw std::invalid_argument("Failed to save data on disk");
+		throw std::runtime_error("Failed to save data on disk");
 	}
-
-	return true;
 }
 
 int main(int argc, char* argv[])
@@ -100,9 +103,10 @@ int main(int argc, char* argv[])
 	{
 		CopyFileWithReplacement(args->inputFileName, args->outputFileName, args->searchString, args->replaceString);
 	}
-	catch (std::exception exception)
+	catch (const std::exception& exception)
 	{
 		std::cout << exception.what() << std::endl;
+		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;
 }
