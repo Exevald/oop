@@ -14,7 +14,7 @@ TripleMatrix ReadMatrix(const std::string& matrixFileName)
 	matrixFile.open(matrixFileName);
 	if (!matrixFile.is_open())
 	{
-		throw std::invalid_argument("Failed to open " + matrixFileName + " for reading");
+		throw std::runtime_error("Failed to open " + matrixFileName + " for reading");
 	}
 
 	TripleMatrix matrix;
@@ -91,11 +91,11 @@ TripleMatrix InvertMatrix(const TripleMatrix& matrix)
 {
 	if (matrix.empty())
 	{
-		throw std::invalid_argument("Matrix is empty");
+		throw std::runtime_error("Matrix is empty");
 	}
 	if (GetTripleMatrixDeterminant(matrix) == 0)
 	{
-		throw std::invalid_argument("Determinant is zero");
+		throw std::runtime_error("Determinant is zero");
 	}
 
 	TripleMatrix invertedMatrix;

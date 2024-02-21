@@ -137,11 +137,13 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="test-data\correct-inverted-matrix.txt" />
-    <Text Include="test-data\empty-matrix-file.txt" />
+    <Text Include="test-data\empty-matrix-file-error.txt" />
     <Text Include="test-data\empty.txt" />
-    <Text Include="test-data\invalid-matrix-file.txt" />
-    <Text Include="test-data\invalid-usage.txt" />
+    <Text Include="test-data\invalid-matrix-file-error.txt" />
+    <Text Include="test-data\invalid-usage-error.txt" />
     <Text Include="test-data\matrix.txt" />
+    <Text Include="test-data\zero-determinant-error.txt" />
+    <Text Include="test-data\zero-determinant-matrix.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
