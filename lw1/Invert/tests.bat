@@ -34,9 +34,6 @@ REM Поиск обратной матрицы
 fc test-data\correct-inverted-matrix.txt "%TEMP%\output.txt" > nul || goto err 
 echo Test 5 passed
 
-%MyProgram% test-data\temp-matrix.txt > "output.txt" || goto err
-echo Test 6 passed
-
 REM Тесты прошли успешно
 echo All tests passed successfully
 exit /B 0

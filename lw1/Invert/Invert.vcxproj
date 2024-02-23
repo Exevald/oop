@@ -135,7 +135,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Invert.cpp" />
-    <Text Include="temp-matrix.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="tests.bat" />
