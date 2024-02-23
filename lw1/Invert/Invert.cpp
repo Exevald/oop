@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <iostream>
 #include <string>
+#include <optional>
 
 typedef std::array<std::array<double, 3>, 3> TripleMatrix;
 typedef std::array<std::array<double, 2>, 2> DoubleMatrix;
@@ -48,14 +49,14 @@ double GetTripleMatrixDeterminant(const TripleMatrix& matrix)
 		- negativeDiagonal - negativeTriangle1 - negativeTriangle2;
 }
 
-double GetDoubleMatrixDeterminant(const DoubleMatrix matrix)
+double GetDoubleMatrixDeterminant(const DoubleMatrix& matrix)
 {
 	return matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1];
 }
 
 double GetMatrixMinor(size_t i, size_t j, const TripleMatrix& matrix)
 {
-	DoubleMatrix minorMatrix;
+	DoubleMatrix minorMatrix{};
 	int minorRow = 0;
 	for (size_t row = 0; row < 3; ++row)
 	{
@@ -87,23 +88,23 @@ void WriteMatrix(const TripleMatrix& matrix)
 	}
 }
 
-TripleMatrix InvertMatrix(const TripleMatrix& matrix)
+std::optional<TripleMatrix> InvertMatrix(const TripleMatrix& matrix)
 {
-	if (matrix.empty())
+	const double matrixDeterminant = GetTripleMatrixDeterminant(matrix);
+	if (matrixDeterminant == 0)
 	{
-		throw std::runtime_error("Matrix is empty");
-	}
-	if (GetTripleMatrixDeterminant(matrix) == 0)
-	{
-		throw std::runtime_error("Determinant is zero");
+		std::cout << "Determinant is zero" << std::endl;
+		return std::nullopt;
 	}
 
-	TripleMatrix invertedMatrix;
+	TripleMatrix invertedMatrix{};
 	for (size_t i = 0; i < 3; i++)
 	{
 		for (size_t j = 0; j < 3; j++)
 		{
-			invertedMatrix[j][i] = pow(-1, i + j) * GetMatrixMinor(i, j, matrix) / GetTripleMatrixDeterminant(matrix);
+			double degree = ((i + j) % 2 == 0) ? 1.0 : -1.0;
+			invertedMatrix[j][i] = GetMatrixMinor(i, j, matrix) / matrixDeterminant;
+			invertedMatrix[j][i] *=	degree;
 		}
 	}
 
@@ -123,8 +124,11 @@ int main(int argc, char* argv[])
 	try
 	{
 		TripleMatrix matrix = ReadMatrix(matrixFileName);
-		TripleMatrix invertedMatrix = InvertMatrix(matrix);
-		WriteMatrix(invertedMatrix);
+		
+		if (auto invertedMatrix = InvertMatrix(matrix))
+		{
+			WriteMatrix(invertedMatrix.value());
+		}
 	}
 	catch (const std::exception& exception)
 	{

@@ -33,5 +33,6 @@
     <Text Include="test-data\empty-matrix-file-error.txt" />
     <Text Include="test-data\zero-determinant-error.txt" />
     <Text Include="test-data\zero-determinant-matrix.txt" />
+    <Text Include="temp-matrix.txt" />
   </ItemGroup>
 </Project>

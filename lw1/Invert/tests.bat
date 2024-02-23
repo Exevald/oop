@@ -24,8 +24,8 @@ REM Задан файл с пустой матрицей. Программа должна прекратить свою работу
 fc test-data\empty-matrix-file-error.txt "%TEMP%\output.txt" > nul || goto err 
 echo Test 3 passed
 
-REM Определитель матрицы равен 0. Программа должна прекратить свою работу
-%MyProgram% test-data\zero-determinant-matrix.txt > "%TEMP%\output.txt" && goto err
+REM Определитель матрицы равен 0. Программа должна вывести сообщение
+%MyProgram% test-data\zero-determinant-matrix.txt > "%TEMP%\output.txt" || goto err
 fc test-data\zero-determinant-error.txt "%TEMP%\output.txt" > nul || goto err 
 echo Test 4 passed
 
@@ -33,6 +33,9 @@ REM Поиск обратной матрицы
 %MyProgram% test-data\matrix.txt > "%TEMP%\output.txt" || goto err
 fc test-data\correct-inverted-matrix.txt "%TEMP%\output.txt" > nul || goto err 
 echo Test 5 passed
+
+%MyProgram% test-data\temp-matrix.txt > "output.txt" || goto err
+echo Test 6 passed
 
 REM Тесты прошли успешно
 echo All tests passed successfully
