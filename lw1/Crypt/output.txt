@@ -1,0 +1,2 @@
+Wrong app mode: write
+Use crypt or decrypt mode
