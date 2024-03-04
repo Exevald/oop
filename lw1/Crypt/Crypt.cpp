@@ -43,11 +43,11 @@ int ConvertAndCheckKey(const std::string& key)
 
 std::optional<AppMode> ConvertAndCheckMode(const char* mode)
 {
-	if (strcmp(mode, "encrypt") == 0)
+	if (mode == "encrypt")
 	{
 		return AppMode::Encrypt;
 	}
-	else if (strcmp(mode, "decrypt") == 0)
+	else if (mode == "decrypt")
 	{
 		return AppMode::Decrypt;
 	}
@@ -138,7 +138,7 @@ void DecryptStream(std::ifstream& inputFile, std::ofstream& outputFile, const ui
 }
 
 void CryptOrDecryptBinaryFile(
-	const AppMode& mode,
+	const AppMode mode,
 	const std::string& inputFileName,
 	const std::string& outputFileName,
 	const uint8_t key)
