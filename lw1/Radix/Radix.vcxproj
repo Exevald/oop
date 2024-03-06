@@ -137,10 +137,10 @@
     <None Include="tests.bat" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="test-data\convert-negative-value-to-decimal-notation.txt" />
-    <Text Include="test-data\convert-value-to-decimal-notation.txt" />
-    <Text Include="test-data\convert-value-to-same-notation.txt" />
-    <Text Include="test-data\convert-zero-to-decimal-notation.txt" />
+    <Text Include="test-data\negative-value-5.txt" />
+    <Text Include="test-data\value-5.txt" />
+    <Text Include="test-data\value-2.txt" />
+    <Text Include="test-data\zero-value.txt" />
     <Text Include="test-data\invalid-argument.txt" />
     <Text Include="test-data\invalid-usage.txt" />
     <Text Include="test-data\value-overflow.txt" />

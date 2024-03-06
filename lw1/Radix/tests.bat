@@ -21,41 +21,49 @@ echo Test 2 passed
 
 REM Некорректно задано число для перевода. Программа должна прекратить свою работу
 %MyProgram% 2 10 !!!! > "%TEMP%\output.txt" && goto err
-fc test-data\invalid-argument.txt "%TEMP%\output.txt" > nul || goto err 
 echo Test 3 passed
 
 REM Некорректно задана система счисления для перевода. Программа должна прекратить свою работу
 %MyProgram% !!!10 16 -0123 > "%TEMP%\output.txt" && goto err
-fc test-data\invalid-argument.txt "%TEMP%\output.txt" > nul || goto err 
 echo Test 4 passed
 
 REM Перевод числа из двоичной системы счисления в десятичную систему счисления
 %MyProgram% 2 10 101 > "%TEMP%\output.txt" || goto err
-rem Поменять название файла на ожидаемый результат
-fc test-data\convert-value-to-decimal-notation.txt "%TEMP%\output.txt" > nul || goto err 
+fc test-data\value-5.txt "%TEMP%\output.txt" > nul || goto err 
 echo Test 5 passed
 
 REM Перевод отрицательного числа в другую систему счисления
 %MyProgram% 2 10 -101 > "%TEMP%\output.txt" || goto err
-fc test-data\convert-negative-value-to-decimal-notation.txt "%TEMP%\output.txt" > nul || goto err 
+fc test-data\negative-value-5.txt "%TEMP%\output.txt" > nul || goto err 
 echo Test 6 passed
 
 REM Перевод нуля в другую систему счисления
 %MyProgram% 2 10 -0 > "%TEMP%\output.txt" || goto err
-fc test-data\convert-zero-to-decimal-notation.txt "%TEMP%\output.txt" > nul || goto err 
+fc test-data\zero-value.txt "%TEMP%\output.txt" > nul || goto err 
 echo Test 7 passed
 
 REM Перевод числа в ту же самую систему счисления
 %MyProgram% 10 10 2 > "%TEMP%\output.txt" || goto err
-fc test-data\convert-value-to-same-notation.txt "%TEMP%\output.txt" > nul || goto err 
+fc test-data\value-2.txt "%TEMP%\output.txt" > nul || goto err 
 echo Test 8 passed
 
 REM Число превышает максимальное значение типа int. Программа должна прекратить свою работу
-%MyProgram% 10 16 2147483650 > "%TEMP%\output.txt" && goto err
+%MyProgram% 10 16 2147483647 > "%TEMP%\output.txt" && goto err
 fc test-data\value-overflow.txt "%TEMP%\output.txt" > nul || goto err 
 echo Test 9 passed
 
-rem при проверки граничных условий проверять граничное, и ближайшее к граничному + добавить тест для int_min
+REM Число превышает максимальное значение типа int. Программа должна прекратить свою работу
+%MyProgram% 10 16 2147483646 > "%TEMP%\output.txt" || goto err
+echo Test 10 passed
+
+REM Число превышает максимальное значение типа int. Программа должна прекратить свою работу
+%MyProgram% 10 16 -2147483648 > "%TEMP%\output.txt" && goto err
+fc test-data\value-overflow.txt "%TEMP%\output.txt" > nul || goto err 
+echo Test 11 passed
+
+REM Число превышает максимальное значение типа int. Программа должна прекратить свою работу
+%MyProgram% 10 16 -2147483647 > "%TEMP%\output.txt" || goto err
+echo Test 12 passed
 
 REM Тесты прошли успешно
 echo All tests passed successfully

@@ -2,6 +2,9 @@
 #include <optional>
 #include <string>
 
+const int MIN_NOTATION = 2;
+const int MAX_NOTATION = 36;
+
 struct Args
 {
 	std::string sourceNotation;
@@ -25,7 +28,7 @@ std::optional<Args> ParseArgs(int argc, char* argv[])
 	return args;
 }
 
-bool HandleError(const bool& errInvalidArgument, const bool& errValueOverflow)
+bool HandleError(bool errInvalidArgument, bool errValueOverflow)
 {
 	if (errInvalidArgument)
 	{
@@ -41,18 +44,18 @@ bool HandleError(const bool& errInvalidArgument, const bool& errValueOverflow)
 	return false;
 }
 
-int StringToInt(const std::string& str, int radix, bool& wasError)
+int StringToInt(const std::string& str, int radix, bool& errInvalidArgument, bool& errValueOverflow)
 {
-	const int minNotation = 2;
-	const int maxNotation = 36;
-	wasError = false;
-	if (str.empty() || radix < minNotation || radix > maxNotation)
+	int result = 0;
+	errInvalidArgument = false;
+	errValueOverflow = false;
+
+	if (str.empty() || radix < MIN_NOTATION || radix > MAX_NOTATION)
 	{
-		wasError = true;
+		errInvalidArgument = true;
 		return 0;
 	}
 
-	int result = 0;
 	int sign = 1;
 	size_t i = 0;
 
@@ -61,82 +64,69 @@ int StringToInt(const std::string& str, int radix, bool& wasError)
 		sign = -1;
 		i++;
 	}
-	else if (str[i] == '+')
-	{
-		i++;
-	}
 	for (; i < str.size(); i++)
 	{
 		int digit = isdigit(str[i]) ? str[i] - '0' : str[i] - 'A' + 10;
 		if (digit >= radix)
 		{
-			wasError = true;
+			errInvalidArgument = true;
 			return 0;
 		}
 		if (result > (INT_MAX - digit) / radix)
 		{
-			wasError = true;
+			errValueOverflow = true;
 			return 0;
 		}
 		result = result * radix + digit;
 	}
 
-	if (sign == -1 && -result < INT_MIN)
+	if (sign == -1 && -result < INT_MIN + 1)
 	{
-		wasError = true;
+		errValueOverflow = true;
 		return 0;
 	}
 
 	return sign * result;
 }
 
-int StringToInt(const std::string& str, const int radix, bool& errInvalidArgument, bool& errValueOverflow)
+std::string IntToString(int n, const int radix, bool& errValueOverflow)
 {
-	int value = 0;
-	if (str == "0")
-	{
-		return 0;
-	}
-	try
-	{
-		value = std::stoi(str, 0, radix);
-	}
-	catch (const std::invalid_argument&)
-	{
-		errInvalidArgument = true;
-		return 0;
-	}
-	catch (const std::out_of_range&)
+	errValueOverflow = false;
+
+	if (radix < MIN_NOTATION || radix > MAX_NOTATION)
 	{
 		errValueOverflow = true;
-		return 0;
-	}
-	return value;
-}
-
-// Можно просто вернуть пустую строку и обрабатывать уже её
-// Не надо передавать примитивные типы данных по константной ссылке
-// Добавить обработку знака
-std::string IntToString(int n, const int radix, bool& wasError)
-{
-	// Сделать проверку на radix > 36
-	wasError = false;
-	if (radix < 2 || radix > 36)
-	{
-		wasError = true;
 		return "";
 	}
 
 	std::string vocabulary = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	std::string result;
-	if (n < 0 || n > INT_MAX) // Условие всегда false. Вторая часть условия не имеет смысла
+
+	if (n > INT_MAX - 1)
 	{
-		wasError = true;
+		errValueOverflow = true;
+		return "";
 	}
+	bool isNegative = false;
+	if (n < 0)
+	{
+		isNegative = true;
+		n *= -1;
+	}
+	if (n < 0 && -n < INT_MIN + 1)
+	{
+		errValueOverflow = true;
+		return "";
+	}
+
 	while (n > 0)
 	{
 		result = vocabulary[n % radix] + result;
 		n /= radix;
+	}
+	if (isNegative)
+	{
+		result = "-" + result;
 	}
 
 	return result;
@@ -146,6 +136,8 @@ int ConvertNotation(const std::string& notation, bool& errInvalidArgument, bool&
 {
 	const int minNotation = 2;
 	const int maxNotation = 36;
+	errInvalidArgument = false;
+	errValueOverflow = false;
 
 	int convertedNotatiion = StringToInt(notation, 10, errInvalidArgument, errValueOverflow);
 	bool isNotationCorrect = (convertedNotatiion >= minNotation) || (convertedNotatiion <= maxNotation);
@@ -158,43 +150,39 @@ int ConvertNotation(const std::string& notation, bool& errInvalidArgument, bool&
 	return convertedNotatiion;
 }
 
-bool ConvertValueToNotation(const std::string& sourceNotation, const std::string& destinationNotation, std::string str)
+std::string ConvertValueToNotation(const std::string& sourceNotation, const std::string& destinationNotation, const std::string& str)
 {
 	bool errInvalidArgument = false;
 	bool errValueOverflow = false;
 	std::string resultInDestinationNotation;
-	// Вынести в отдельную фукнцию
+
 	int convertedSourceNotation = ConvertNotation(sourceNotation, errInvalidArgument, errValueOverflow);
 	if (HandleError(errInvalidArgument, errValueOverflow))
 	{
-		return false;
+		return "";
 	}
 	int convertedDestinationNotation = ConvertNotation(destinationNotation, errInvalidArgument, errValueOverflow);
 	if (HandleError(errInvalidArgument, errValueOverflow))
 	{
-		return false;
+		return "";
 	}
 
-	// Переименовать без decimal
-	// Сделать имена переменных покороче
 	int valueInDecimalNotation = StringToInt(str, convertedSourceNotation, errInvalidArgument, errValueOverflow);
 	if (HandleError(errInvalidArgument, errValueOverflow))
 	{
-		return false;
+		return "";
 	}
 	resultInDestinationNotation = IntToString(valueInDecimalNotation, convertedDestinationNotation, errValueOverflow);
 	if (HandleError(errInvalidArgument, errValueOverflow))
 	{
-		return false;
+		return "";
 	}
 	if (valueInDecimalNotation == 0)
 	{
 		resultInDestinationNotation = "0";
 	}
 
-	std::cout << "Value in destination notation: " << resultInDestinationNotation << std::endl;
-
-	return true;
+	return resultInDestinationNotation;
 }
 
 int main(int argc, char* argv[])
@@ -204,10 +192,13 @@ int main(int argc, char* argv[])
 	{
 		return EXIT_FAILURE;
 	}
-	// Поменять возвращаемое значение на string
-	if (!ConvertValueToNotation(args->sourceNotation, args->destinationNotation, args->value))
+	if (std::string resultValue = ConvertValueToNotation(args->sourceNotation, args->destinationNotation, args->value); resultValue == "")
 	{
 		return EXIT_FAILURE;
+	}
+	else
+	{
+		std::cout << "Value in destination notation: " << resultValue << std::endl;
 	}
 
 	return EXIT_SUCCESS;
