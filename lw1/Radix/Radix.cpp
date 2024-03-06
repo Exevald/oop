@@ -134,13 +134,11 @@ std::string IntToString(int n, const int radix, bool& errValueOverflow)
 
 int ConvertNotation(const std::string& notation, bool& errInvalidArgument, bool& errValueOverflow)
 {
-	const int minNotation = 2;
-	const int maxNotation = 36;
 	errInvalidArgument = false;
 	errValueOverflow = false;
 
 	int convertedNotatiion = StringToInt(notation, 10, errInvalidArgument, errValueOverflow);
-	bool isNotationCorrect = (convertedNotatiion >= minNotation) || (convertedNotatiion <= maxNotation);
+	bool isNotationCorrect = (convertedNotatiion >= MIN_NOTATION) || (convertedNotatiion <= MAX_NOTATION);
 	if (!isNotationCorrect)
 	{
 		errValueOverflow = true;
