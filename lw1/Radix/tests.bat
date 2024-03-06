@@ -52,7 +52,7 @@ REM Число превышает максимальное значение типа int. Программа должна прекратить 
 fc test-data\value-overflow.txt "%TEMP%\output.txt" > nul || goto err 
 echo Test 9 passed
 
-REM Число превышает максимальное значение типа int. Программа должна прекратить свою работу
+REM Число не превышает максимальное значение типа int. Программа должна прекратить свою работу
 %MyProgram% 10 16 2147483646 > "%TEMP%\output.txt" || goto err
 echo Test 10 passed
 
@@ -61,7 +61,7 @@ REM Число превышает максимальное значение типа int. Программа должна прекратить 
 fc test-data\value-overflow.txt "%TEMP%\output.txt" > nul || goto err 
 echo Test 11 passed
 
-REM Число превышает максимальное значение типа int. Программа должна прекратить свою работу
+REM Число не превышает максимальное значение типа int. Программа должна прекратить свою работу
 %MyProgram% 10 16 -2147483647 > "%TEMP%\output.txt" || goto err
 echo Test 12 passed
 
