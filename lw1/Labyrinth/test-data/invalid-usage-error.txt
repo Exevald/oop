@@ -1,0 +1,2 @@
+Invalid argument count
+Usage: labyrinth.exe <input file> <output file>
