@@ -5,34 +5,32 @@
 #include <string>
 #include <unordered_map>
 
+const std::unordered_map<std::string, char> HtmlEntities = {
+	{ "&quot;", '"' },
+	{ "&apos;", '\'' },
+	{ "&lt;", '<' },
+	{ "&gt;", '>' },
+	{ "&amp;", '&' }
+};
+
 std::string HtmlDecode(const std::string& htmlString)
 {
-	std::unordered_map<std::string, char> htmlEntities = {
-		{ "&quot;", '"' },
-		{ "&apos;", '\'' },
-		{ "&lt;", '<' },
-		{ "&gt;", '>' },
-		{ "&amp;", '&' }
-	};
-	std::string decodedString = "";
-	for (size_t i = 0; i < htmlString.length(); i++)
+	std::string decodedString;
+	for (size_t i = 0; i < htmlString.length();)
 	{
 		if (htmlString[i] == '&')
 		{
-			size_t semicolonPos = htmlString.find(';', i);
-			if (semicolonPos != std::string::npos)
+			std::string entity = htmlString.substr(i);
+			entity = entity.substr(0, entity.find(';') + 1);
+			auto it = HtmlEntities.find(entity);
+			if (it != HtmlEntities.end())
 			{
-				std::string entity = htmlString.substr(i, semicolonPos - i + 1);
-				if (htmlEntities[entity])
-				{
-					decodedString += htmlEntities[entity];
-					i = semicolonPos;
-					continue;
-				}
+				decodedString += it->second;
+				i += entity.size();
+				continue;
 			}
 		}
-		decodedString += htmlString[i];
+		decodedString += htmlString[i++];
 	}
-
 	return decodedString;
 }

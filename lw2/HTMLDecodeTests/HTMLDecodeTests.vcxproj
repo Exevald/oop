@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{1c4215ee-c2e2-4828-b339-bb1459003921}</ProjectGuid>
-    <RootNamespace>HTMLDecode</RootNamespace>
+    <ProjectGuid>{5223ef0c-6842-49a9-93d2-0f309cc2da77}</ProjectGuid>
+    <RootNamespace>HTMLDecodeTests</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>..\catch2</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,11 +128,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="HTMLDecode.cpp" />
-    <ClCompile Include="HTMLDecoder.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="HTMLDecoder.h" />
+    <ClCompile Include="..\HTMLDecode\HTMLDecoder.cpp" />
+    <ClCompile Include="HTMLDecodeTests.cpp" />
+    <ClCompile Include="Tests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
