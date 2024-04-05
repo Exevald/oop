@@ -44,14 +44,19 @@ void HandleSaving(const std::string& word, Dictionary& dict)
 	}
 }
 
+void TransformToLowerCase(std::string& word)
+{
+	std::transform(word.begin(), word.end(), word.begin(), [](unsigned char ch) {
+		return std::tolower(ch);
+	});
+}
+
 void HandleWord(const std::string& word, Dictionary& dict)
 {
 	std::string lowerWord = word;
-	std::transform(lowerWord.begin(), lowerWord.end(), lowerWord.begin(), [](unsigned char ch) {
-		return std::tolower(ch);
-	});
+	TransformToLowerCase(lowerWord);	
 
-	if (FindWord(lowerWord, dict) == "")
+	if (FindWord(word, dict) == "")
 	{
 		HandleSaving(word, dict);
 	}
