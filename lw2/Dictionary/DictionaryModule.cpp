@@ -56,9 +56,9 @@ void HandleWord(const std::string& word, Dictionary& dict)
 	std::string lowerWord = word;
 	TransformToLowerCase(lowerWord);	
 
-	if (FindWord(word, dict) == "")
+	if (FindWord(lowerWord, dict) == "")
 	{
-		HandleSaving(word, dict);
+		HandleSaving(lowerWord, dict);
 	}
 	else
 	{
