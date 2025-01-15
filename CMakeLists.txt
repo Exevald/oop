@@ -9,3 +9,4 @@ find_package(GTest REQUIRED)
 enable_testing()
 
 add_subdirectory(lw2/ParseURL)
+add_subdirectory(lw2/ExpandTemplate)
