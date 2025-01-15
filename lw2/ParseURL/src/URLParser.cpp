@@ -1,6 +1,6 @@
+#include "URLParser.h"
 #include <iostream>
 #include <regex>
-#include "URLParser.h"
 
 bool ParseURL(const std::string& url, Protocol& protocol, int& port, std::string& host, std::string& document)
 {
@@ -51,7 +51,7 @@ bool ParseURL(const std::string& url, Protocol& protocol, int& port, std::string
 }
 
 void PrintParsedURLInfo(const std::string& url, const Protocol& protocol, int& port, const std::string& host,
-		const std::string& document)
+	const std::string& document)
 {
 	std::cout << url << std::endl;
 	std::cout << "HOST: " << host << std::endl;

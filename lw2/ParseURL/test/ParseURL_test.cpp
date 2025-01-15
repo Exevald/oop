@@ -1,5 +1,5 @@
-#include <gtest/gtest.h>
 #include "../src/URLParser.h"
+#include <gtest/gtest.h>
 
 struct TestArgs
 {
@@ -23,7 +23,7 @@ TEST(ParsingUrl, ParseDefaultUrl)
 {
 	TestArgs args = PrepareTestArgs("https://www.mysite.com/docs/document1.html?page=30&lang=en#title");
 
-	auto isParsingComplete = ParseURL(args.url,args.protocol,args.port,args.host,args.document);
+	auto isParsingComplete = ParseURL(args.url, args.protocol, args.port, args.host, args.document);
 	ASSERT_EQ(isParsingComplete, true);
 	ASSERT_EQ(args.protocol, Protocol::HTTPS);
 	ASSERT_EQ(args.port, 443);
@@ -35,7 +35,7 @@ TEST(ParsingUrl, ParseDefaultUrlWithPort)
 {
 	TestArgs args = PrepareTestArgs("https://www.google.com:123/docs/document1.html?page=30&lang=en#title");
 
-	auto isParsingComplete = ParseURL(args.url,args.protocol,args.port,args.host,args.document);
+	auto isParsingComplete = ParseURL(args.url, args.protocol, args.port, args.host, args.document);
 	ASSERT_EQ(isParsingComplete, true);
 	ASSERT_EQ(args.protocol, Protocol::HTTPS);
 	ASSERT_EQ(args.port, 123);
@@ -47,7 +47,7 @@ TEST(ParsingUrl, ParseDefaultUrlWithWrongPort)
 {
 	TestArgs args = PrepareTestArgs("https://www.google.com:9999999/docs/document1.html?page=30&lang=en#title");
 
-	auto isParsingComplete = ParseURL(args.url,args.protocol,args.port,args.host,args.document);
+	auto isParsingComplete = ParseURL(args.url, args.protocol, args.port, args.host, args.document);
 	ASSERT_EQ(isParsingComplete, false);
 }
 
@@ -55,10 +55,9 @@ TEST(ParsingUrl, ParseDefaultUrlWithEmptyHost)
 {
 	TestArgs args = PrepareTestArgs("https://:123/docs/document1.html?page=30&lang=en#title");
 
-	auto isParsingComplete = ParseURL(args.url,args.protocol,args.port,args.host,args.document);
+	auto isParsingComplete = ParseURL(args.url, args.protocol, args.port, args.host, args.document);
 	ASSERT_EQ(isParsingComplete, false);
 }
-
 
 int main(int argc, char** argv)
 {
