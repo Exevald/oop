@@ -10,3 +10,4 @@ enable_testing()
 
 add_subdirectory(lw2/ParseURL)
 add_subdirectory(lw2/ExpandTemplate)
+add_subdirectory(lw3/Calculator)
