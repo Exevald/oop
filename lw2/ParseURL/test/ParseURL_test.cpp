@@ -12,8 +12,8 @@ struct TestArgs
 
 TestArgs PrepareTestArgs(const std::string& url)
 {
-	Protocol protocol;
-	int port;
+	Protocol protocol = Protocol::HTTPS;
+	int port = 0;
 	std::string host;
 	std::string document;
 	return TestArgs{ url, protocol, port, host, document };
