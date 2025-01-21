@@ -15,18 +15,22 @@ classDiagram
     }
 
     class CCalculator {
-        -VariablesMap m_variablesMap
-        -FunctionsMap m_functionsMap
+        -map~string, CVariable~ m_variablesMap
+        -map~string, CVariable~ m_functionsMap
         +DefineVariable(identifier: string)
         +UpdateVariable(identifier: string, value: double): void
         +DefineFunction(identifier: string, operand: string): void
         +DefineFunction(identifier: string, leftOperand: string, Operation operation, rightOperand: string): void
+        +GetIdentifierValue(identifier: string): shared_ptr~double~
+        +GetAvailableVariables(): map~string, CVariable~ const
+        +GetAvailableFunctions(): map~string, CFunction~ const
     }
 
     class CVariable {
-        -double m_value
-        +GetValue(): double
-        +HasValue(): void const
+        -shared_ptr~double~ m_value
+        +SetValue(shared_ptr~double~ value):: void
+        +GetValue(): std::shared_ptr~double~ const
+        +IsDefined(): bool const
         +CalculateValue(): void
         +RegisterObserver(IObserver & observer): void
         +RemoveObserver(): void
@@ -35,10 +39,10 @@ classDiagram
     }
 
     class CFunction {
-        -double m_value
+        -shared_ptr~double~ m_value
         -Operaion m_operation
-        +GetVaue(): double
-        +HasValue(): void const
+        +GetVaue(): std::shared_ptr~double~ const
+        +IsDefined(): bool const
         +CalculateValue(): void
         +Update(): void
         -ClearCache(): void
@@ -46,8 +50,8 @@ classDiagram
 
     class IValueProvider {
         <<interface>>
-        +GetValue(): double
-        +HasValue(): void const
+        +GetValue(): std::shared_ptr~double~ const
+        +IsDefined(): bool const
         +CalculateValue(): void
         -Calculate(): double
     }

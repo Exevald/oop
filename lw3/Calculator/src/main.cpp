@@ -1,5 +1,14 @@
 #include <iostream>
+#include "CCalculatorController.h"
 
 int main() {
-    return 0;
+	CCalculator calculator;
+	CCalculatorController calculatorController(calculator, std::cin, std::cout);
+
+	std::cout << ">";
+	while (true)
+	{
+		calculatorController.HandleCommand();
+		std::cout << ">";
+	}
 }

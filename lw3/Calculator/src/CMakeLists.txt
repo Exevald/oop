@@ -2,10 +2,18 @@ cmake_minimum_required(VERSION 3.27)
 project(calculator_lib)
 
 add_library(calculator_lib STATIC
-        main.cpp)
+        CVariable.cpp
+        CFunction.cpp
+        CCalculator.cpp
+        CCalculatorController.cpp
+        main.cpp
+)
 
-add_executable(
-        calculator
+add_executable(calculator
+        CVariable.cpp
+        CFunction.cpp
+        CCalculator.cpp
+        CCalculatorController.cpp
         main.cpp
 )
 
