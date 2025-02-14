@@ -51,10 +51,55 @@ TEST(ParsingUrl, ParseDefaultUrlWithWrongPort)
 	ASSERT_EQ(isParsingComplete, false);
 }
 
+TEST(ParsingUrl, ParseDefaultUrlWithWrongPortWithLetters)
+{
+	TestArgs args = PrepareTestArgs("https://www.google.com:aaa/docs/document1.html?page=30&lang=en#title");
+
+	auto isParsingComplete = ParseURL(args.url, args.protocol, args.port, args.host, args.document);
+	ASSERT_EQ(isParsingComplete, false);
+}
+
 TEST(ParsingUrl, ParseDefaultUrlWithEmptyHost)
 {
 	TestArgs args = PrepareTestArgs("https://:123/docs/document1.html?page=30&lang=en#title");
 
+	auto isParsingComplete = ParseURL(args.url, args.protocol, args.port, args.host, args.document);
+	ASSERT_EQ(isParsingComplete, false);
+}
+
+TEST(ParsingUrl, ParseUrlWithDifferentUpperCaseInProtocol)
+{
+	TestArgs args = PrepareTestArgs("htTp://example.com:8080/index.html");
+
+	auto isParsingComplete = ParseURL(args.url, args.protocol, args.port, args.host, args.document);
+	ASSERT_EQ(isParsingComplete, true);
+	ASSERT_EQ(args.protocol, Protocol::HTTP);
+	ASSERT_EQ(args.port, 8080);
+	ASSERT_EQ(args.host, "example.com");
+	ASSERT_EQ(args.document, "index.html");
+}
+
+TEST(ParsingUrl, ParseEmptyUrl)
+{
+	TestArgs args = PrepareTestArgs("");
+	auto isParsingComplete = ParseURL(args.url, args.protocol, args.port, args.host, args.document);
+	ASSERT_EQ(isParsingComplete, false);
+}
+
+TEST(ParsingUrl, ParseUrlWithEmptyDocument)
+{
+	TestArgs args = PrepareTestArgs("https://example.com:8080");
+
+	auto isParsingComplete = ParseURL(args.url, args.protocol, args.port, args.host, args.document);
+	ASSERT_EQ(isParsingComplete, true);
+	ASSERT_EQ(args.protocol, Protocol::HTTPS);
+	ASSERT_EQ(args.port, 8080);
+	ASSERT_EQ(args.host, "example.com");
+}
+
+TEST(ParsingUrl, ParseUrlWithInvalidProtocol)
+{
+	TestArgs args = PrepareTestArgs("bimbimbambam://example.com:8080");
 	auto isParsingComplete = ParseURL(args.url, args.protocol, args.port, args.host, args.document);
 	ASSERT_EQ(isParsingComplete, false);
 }

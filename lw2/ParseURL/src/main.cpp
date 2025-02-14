@@ -14,7 +14,7 @@ int main()
 		auto isParsingComplete = ParseURL(url, protocol, port, host, document);
 		if (isParsingComplete)
 		{
-			PrintParsedURLInfo(url, protocol, port, host, document);
+			PrintParsedURLInfo(url, port, host, document);
 		}
 		else
 		{
