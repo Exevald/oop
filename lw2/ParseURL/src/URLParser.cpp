@@ -55,15 +55,18 @@ bool ParseURL(const std::string& url, Protocol& protocol, int& port, std::string
 	ParseProtocol(protocolString, protocol, port);
 	host = urlMatch[2];
 
-	std::string portStrong = urlMatch[4];
-	try
+	std::string portString = urlMatch[4];
+	if (!portString.empty())
 	{
-		port = ParsePort(portStrong);
-	}
-	catch (const std::exception& exception)
-	{
-		std::cout << exception.what() << std::endl;
-		return false;
+		try
+		{
+			port = ParsePort(portString);
+		}
+		catch (const std::exception& exception)
+		{
+			std::cout << exception.what() << std::endl;
+			return false;
+		}
 	}
 
 	document = urlMatch[5].length() > 0 ? urlMatch[5].str().substr(1) : "";
