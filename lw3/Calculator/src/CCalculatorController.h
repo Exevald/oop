@@ -21,7 +21,9 @@ private:
 	void UpdateVariable();
 	void DefineFunction();
 	static void ParseVariableDefinition(const std::string& expression, std::string& leftOperand, std::string& rightOperand);
+	static void ParseFunctionDefinition(const std::string& expression, std::string& functionName, std::string& leftOperand, std::shared_ptr<Operation>& operation, std::string& rightOperand);
 	static bool IsIdentifierCorrect(const std::string& identifier);
+	static Operation ConvertOperation(const std::string& operationString);
 
 	CCalculator& m_calculator;
 	std::istream& m_input;

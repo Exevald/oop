@@ -58,6 +58,14 @@ TEST(CalculatorController, TestVariableDefinition)
 	testMiddleware.AssertCommandHandling("printvars", "a:nan\n"
 													  "aa:nan\n"
 													  "i:nan\n");
+	testMiddleware.AssertCommandHandling("print a", "nan\n");
+
+	testMiddleware.AssertCommandHandling("let b=10", "");
+	testMiddleware.AssertCommandHandling("print b", "10.000000\n");
+	testMiddleware.AssertCommandHandling("let a=20", "");
+	testMiddleware.AssertCommandHandling("print a", "20.000000\n");
+	testMiddleware.AssertCommandHandling("let c=a", "");
+	testMiddleware.AssertCommandHandling("print c", "20.000000\n");
 }
 
 TEST(CalculatorController, TestUpdateVariableValue)
@@ -74,6 +82,17 @@ TEST(CalculatorController, TestUpdateVariableValue)
 	testMiddleware.AssertCommandHandling("let b=i", "");
 	testMiddleware.AssertCommandHandling("printvars", "b:2.000000\n"
 													  "i:2.000000\n");
+}
+
+TEST(CalculatorController, TestFunctionDefinition)
+{
+	CalculatorControllerTestMiddleware testMiddleware;
+
+	testMiddleware.AssertCommandHandling("var radius", "");
+	testMiddleware.AssertCommandHandling("fn radiusSquared=radius*radius", "");
+	testMiddleware.AssertCommandHandling("printfns", "radiusSquared:nan\n");
+	testMiddleware.AssertCommandHandling("let radius=2", "");
+	testMiddleware.AssertCommandHandling("printfns", "radiusSquared:4.000000\n");
 }
 
 int main(int argc, char** argv)

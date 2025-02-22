@@ -14,10 +14,11 @@ class CCalculator
 {
 public:
 	void DefineVariable(const std::string& identifier);
-	void UpdateVariable(const std::string& identifier, const std::shared_ptr<double>& value);
+	void UpdateVariable(const std::string& identifierName, const std::shared_ptr<double>& value);
 	void DefineFunction(const std::string& identifier, const std::string& operand);
-	void DefineFunction(const std::string& identifier, const std::string& leftOperand, Operation operation, const std::string& rightOperand);
-	[[nodiscard]] std::shared_ptr<double> GetIdentifierValue(const std::string& identifier) const;
+	void DefineFunction(const std::string& identifier, const std::string& leftOperandName, Operation operation, const std::string& rightOperandName);
+	[[nodiscard]] std::shared_ptr<IValueProvider> GetIdentifier(const std::string& identifierName) const;
+	[[nodiscard]] std::shared_ptr<double> GetIdentifierValue(const std::string& identifierName) const;
 	[[nodiscard]] VariablesMap GetAvailableVariables() const;
 	[[nodiscard]] FunctionsMap GetAvailableFunctions() const;
 

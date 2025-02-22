@@ -12,6 +12,10 @@ classDiagram
         -UpdateVariable(): void
         -DefineFunction(): void
         -PrintIdentifier(): void const
+        -ParseVariableDefinition(const string& expression, string& leftOperand, string& rightOperand): void
+        -ParseFunctionDefinition(const string& expression, string& functionName, string& leftOperand, Operation& operation, string& rightOperand): void
+        -IsIdentifierCorrect(const string& identifier):bool
+        -ConvertOperation(const std::string& operationString):Operation
     }
 
     class CCalculator {
@@ -20,8 +24,9 @@ classDiagram
         +DefineVariable(identifier: string)
         +UpdateVariable(identifier: string, value: double): void
         +DefineFunction(identifier: string, operand: string): void
-        +DefineFunction(identifier: string, leftOperand: string, Operation operation, rightOperand: string): void
-        +GetIdentifierValue(identifier: string): shared_ptr~double~
+        +DefineFunction(identifier: string, leftOperandName: string, Operation operation, rightOperandName: string): void
+        +GetIdentifier(identifierName: string): shared_ptr~IValueProvider~
+        +GetIdentifierValue(identifierName: string): shared_ptr~double~
         +GetAvailableVariables(): map~string, CVariable~ const
         +GetAvailableFunctions(): map~string, CFunction~ const
     }
@@ -30,19 +35,22 @@ classDiagram
         -shared_ptr~double~ m_value
         +SetValue(shared_ptr~double~ value):: void
         +GetValue(): std::shared_ptr~double~ const
-        +IsDefined(): bool const
+        +HasValue(): bool const
         +CalculateValue(): void
-        +RegisterObserver(IObserver & observer): void
+        +RegisterObserver(IObserver & observer): Id
         +RemoveObserver(): void
         +NotifyObservers(): void
         +SetValue(): void
+        -GetNextObserverId(): Id
     }
 
     class CFunction {
+        -shared_ptr~IValueProvider~ m_leftOperand;
+        -shared_ptr~IValueProvider~ m_rightOperand;
         -shared_ptr~double~ m_value
         -Operaion m_operation
         +GetVaue(): std::shared_ptr~double~ const
-        +IsDefined(): bool const
+        +HasValue(): bool const
         +CalculateValue(): void
         +Update(): void
         -ClearCache(): void
@@ -51,16 +59,17 @@ classDiagram
     class IValueProvider {
         <<interface>>
         +GetValue(): std::shared_ptr~double~ const
-        +IsDefined(): bool const
+        +HasValue(): bool const
         +CalculateValue(): void
         -Calculate(): double
     }
 
     class IObservable {
         <<interface>>
-        +RegisterObserver(IObserver & observer): void
+        +RegisterObserver(IObserver & observer): Id
         +RemoveObserver(): void
         +NotifyObservers(): void
+        -GetNextObserverId(): Id
     }
 
     class IObserver {
