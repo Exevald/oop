@@ -2,16 +2,32 @@
 #include <fstream>
 #include <iostream>
 #include <optional>
+#include <sstream>
 
 struct Args
 {
 	std::string inputFileName;
 	std::string outputFileName;
-	TemplateParams params;
+	bool isHelpModeEnabled = false;
+	bool isConsoleModeEnabled = false;
 };
 
 std::optional<Args> ParseArgs(int argc, char* argv[])
 {
+	Args args;
+
+	if (argc == 2 && std::string(argv[1]) == "-h")
+	{
+		args.isHelpModeEnabled = true;
+		return args;
+	}
+
+	if (argc == 1)
+	{
+		args.isConsoleModeEnabled = true;
+		return args;
+	}
+
 	if (argc < 3)
 	{
 		std::cout << "Invalid argument count" << std::endl
@@ -20,7 +36,6 @@ std::optional<Args> ParseArgs(int argc, char* argv[])
 		return std::nullopt;
 	}
 
-	Args args;
 	args.inputFileName = argv[1];
 	args.outputFileName = argv[2];
 	TemplateParams params;
@@ -28,22 +43,19 @@ std::optional<Args> ParseArgs(int argc, char* argv[])
 	{
 		params.emplace(argv[i], argv[i + 1]);
 	}
-	args.params = params;
 
 	return args;
 }
 
-void ExpandStreamTemplateWithParams(std::ifstream& input, std::ofstream& output, const TemplateParams& params)
+std::string TrimBlanks(const std::string& str)
 {
-	std::string line;
-	while (std::getline(input, line))
+	size_t first = str.find_first_not_of(' ');
+	if (first == std::string::npos)
 	{
-		output << ExpandTemplate(line, params);
+		return "";
 	}
-	if (!input.eof())
-	{
-		throw std::runtime_error("Failed to read text from file");
-	}
+	size_t last = str.find_last_not_of(' ');
+	return str.substr(first, last - first + 1);
 }
 
 void PrepareStreams(const std::string& inputFileName, const std::string& outputFileName, std::ifstream& input, std::ofstream& output)
@@ -61,18 +73,77 @@ void PrepareStreams(const std::string& inputFileName, const std::string& outputF
 	}
 }
 
-void ExpandTemplateWithParams(const std::string& inputFileName, const std::string& outputFileName, const TemplateParams& params)
+void FindKeyAndValue(const std::string& line, std::string& key, std::string& value)
+{
+	size_t delimiterPos = line.find(":=");
+	if (delimiterPos == std::string::npos)
+	{
+		throw std::runtime_error("Invalid input format: " + line);
+	}
+
+	key = TrimBlanks(line.substr(0, delimiterPos));
+	value = TrimBlanks(line.substr(delimiterPos + 2));
+}
+
+void ExpandFileStreamTemplate(const std::string& inputFileName, const std::string& outputFileName)
 {
 	std::ifstream inputFile;
 	std::ofstream outputFile;
+	TemplateParams params;
 
 	PrepareStreams(inputFileName, outputFileName, inputFile, outputFile);
-	ExpandStreamTemplateWithParams(inputFile, outputFile, params);
+	std::string line;
+
+	while (std::getline(inputFile, line))
+	{
+		if (line.empty())
+		{
+			break;
+		}
+		std::string key, value;
+		FindKeyAndValue(line, key, value);
+
+		params.emplace(key, value);
+	}
+
+	std::stringstream templateStream;
+	while (std::getline(inputFile, line))
+	{
+		templateStream << line << std::endl;
+	}
+
+	outputFile << ExpandTemplate(templateStream.str(), params);
 
 	if (!outputFile.flush())
 	{
 		throw std::runtime_error("Failed to save data on disk");
 	}
+}
+
+void ExpandStreamTemplate(std::istream& input, std::ostream& output)
+{
+	std::string line;
+	TemplateParams params;
+
+	while (std::getline(input, line))
+	{
+		if (line.empty())
+		{
+			break;
+		}
+		std::string key, value;
+		FindKeyAndValue(line, key, value);
+
+		params.emplace(key, value);
+	}
+
+	std::stringstream templateStream;
+	while (std::getline(input, line))
+	{
+		templateStream << line << std::endl;
+	}
+
+	output << ExpandTemplate(templateStream.str(), params);
 }
 
 int main(int argc, char* argv[])
@@ -82,10 +153,24 @@ int main(int argc, char* argv[])
 	{
 		return EXIT_FAILURE;
 	}
+	if (args->isHelpModeEnabled)
+	{
+		std::cout << "Usage: expand_template.exe <input-file> <output-file> [<param> <value> [<param> <value> …]]" << std::endl
+				  << "If no arguments are provided, the program reads from stdin and writes to stdout." << std::endl
+				  << "Use -h to display this help message." << std::endl;
+		return EXIT_SUCCESS;
+	}
 
 	try
 	{
-		ExpandTemplateWithParams(args->inputFileName, args->outputFileName, args->params);
+		if (args->isConsoleModeEnabled)
+		{
+			ExpandStreamTemplate(std::cin, std::cout);
+		}
+		else
+		{
+			ExpandFileStreamTemplate(args->inputFileName, args->outputFileName);
+		}
 	}
 	catch (const std::exception& exception)
 	{

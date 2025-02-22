@@ -5,55 +5,55 @@ using TemplateParams = std::unordered_map<std::string, std::string>;
 
 TEST(ExpandTemplateTests, EmptyTemplateAndNoParams)
 {
-	std::string tpl;
+	std::string templateString;
 	TemplateParams params;
 
-	EXPECT_TRUE(ExpandTemplate(tpl, params).empty());
+	EXPECT_TRUE(ExpandTemplate(templateString, params).empty());
 }
 
 TEST(ExpandTemplateTests, NotEmptyTemplateWithoutParams)
 {
-	std::string tpl = "Hello %NAME%";
+	std::string templateString = "Hello %NAME%";
 	TemplateParams params;
 
-	EXPECT_EQ(ExpandTemplate(tpl, params), tpl);
+	EXPECT_EQ(ExpandTemplate(templateString, params), templateString);
 }
 
 TEST(ExpandTemplateTests, NotEmptyTemplateWithNonExistentParams)
 {
-	std::string tpl = "Hello %NAME%";
+	std::string templateString = "Hello %NAME%";
 	TemplateParams params = {
 		{ "%SURNAME%", "Ivanov" }
 	};
 
-	EXPECT_EQ(ExpandTemplate(tpl, params), tpl);
+	EXPECT_EQ(ExpandTemplate(templateString, params), templateString);
 }
 
 TEST(ExpandTemplateTests, TemplateIsEqualToParam)
 {
-	std::string tpl = "%NAME%";
+	std::string templateString = "%NAME%";
 	TemplateParams params = {
 		{ "%NAME%", "Konstantin" }
 	};
 
-	EXPECT_EQ(ExpandTemplate(tpl, params), "Konstantin");
+	EXPECT_EQ(ExpandTemplate(templateString, params), "Konstantin");
 }
 
 TEST(ExpandTemplateTests, EmptyTemplateWithEmptyParamKeys)
 {
-	std::string tpl = "Hello, world!";
+	std::string templateString = "Hello, world!";
 	TemplateParams params = {
 		{ "", "Hello" },
 		{ "", " " },
 		{ "", "" }
 	};
 
-	EXPECT_EQ(ExpandTemplate(tpl, params), tpl);
+	EXPECT_EQ(ExpandTemplate(templateString, params), templateString);
 }
 
 TEST(ExpandTemplateTests, EmptyTemplateParamValues)
 {
-	std::string tpl = "Hello, world!";
+	std::string templateString = "Hello, world!";
 	TemplateParams params = {
 		{ "world", "" },
 		{ "!", "" },
@@ -61,56 +61,56 @@ TEST(ExpandTemplateTests, EmptyTemplateParamValues)
 		{ ",", "." }
 	};
 
-	EXPECT_EQ(ExpandTemplate(tpl, params), "Hello.");
+	EXPECT_EQ(ExpandTemplate(templateString, params), "Hello.");
 }
 
 TEST(ExpandTemplateTests, TemplateConsistsOnlyOfParameters)
 {
-	std::string tpl = "%NAME%%AGE%";
+	std::string templateString = "%NAME%%AGE%";
 	TemplateParams params = {
 		{ "%NAME%", "Konstantin" },
 		{ "%AGE%", "20" }
 	};
 
-	EXPECT_EQ(ExpandTemplate(tpl, params), "Konstantin20");
+	EXPECT_EQ(ExpandTemplate(templateString, params), "Konstantin20");
 }
 
 TEST(ExpandTemplateTests, TemplateContainsSeveralDifferentParameters)
 {
-	std::string tpl = "Hello, %USER_NAME%! Let's {ACTION}.";
+	std::string templateString = "Hello, %USER_NAME%! Let's {ACTION}.";
 	TemplateParams params = {
 		{ "%USER_NAME%", "Konstantin" },
 		{ "{ACTION}", "code" }
 	};
 
-	EXPECT_EQ(ExpandTemplate(tpl, params), "Hello, Konstantin! Let's code.");
+	EXPECT_EQ(ExpandTemplate(templateString, params), "Hello, Konstantin! Let's code.");
 }
 
 TEST(ExpandTemplateTests, ParameterValuesContainParameters)
 {
-	std::string tpl = "Hello, %USER_NAME%. Today is {WEEK_DAY}.";
+	std::string templateString = "Hello, %USER_NAME%. Today is {WEEK_DAY}.";
 	TemplateParams params = {
 		{ "%USER_NAME%", "Super %USER_NAME% {WEEK_DAY}" },
 		{ "{WEEK_DAY}", "Saturday. {WEEK_DAY}" }
 	};
 
-	EXPECT_EQ(ExpandTemplate(tpl, params), "Hello, Super %USER_NAME% {WEEK_DAY}. Today is Saturday. {WEEK_DAY}.");
+	EXPECT_EQ(ExpandTemplate(templateString, params), "Hello, Super %USER_NAME% {WEEK_DAY}. Today is Saturday. {WEEK_DAY}.");
 }
 
 TEST(ExpandTemplateTests, ParameterPrefixIsAlsoParameter)
 {
-	std::string tpl = "AAA";
+	std::string templateString = "AAA";
 	TemplateParams params = {
 		{ "A", "[a]" },
 		{ "AA", "[aa]" },
 	};
 
-	EXPECT_EQ(ExpandTemplate(tpl, params), "[aa][a]");
+	EXPECT_EQ(ExpandTemplate(templateString, params), "[aa][a]");
 }
 
 TEST(ExpandTemplateTests, ParameterPrefixIsAlsoParameterExtended)
 {
-	std::string tpl = "-AABBCCCCCABC+";
+	std::string templateString = "-AABBCCCCCABC+";
 	TemplateParams params = {
 		{ "A", "[a]" },
 		{ "AA", "[aa]" },
@@ -120,18 +120,18 @@ TEST(ExpandTemplateTests, ParameterPrefixIsAlsoParameterExtended)
 		{ "CC", "[cc]" },
 	};
 
-	EXPECT_EQ(ExpandTemplate(tpl, params), "-[aa][bb][cc][cc][c][a][b][c]+");
+	EXPECT_EQ(ExpandTemplate(templateString, params), "-[aa][bb][cc][cc][c][a][b][c]+");
 }
 
 TEST(ExpandTemplateTests, PrefixOfOneParameterIsSuffixOfAnother)
 {
-	std::string tpl = "-ABCED+";
+	std::string templateString = "-ABCED+";
 	TemplateParams params = {
 		{ "ABCD", "[abcd]" },
 		{ "BCE", "[bce]" },
 	};
 
-	EXPECT_EQ(ExpandTemplate(tpl, params), "-A[bce]D+");
+	EXPECT_EQ(ExpandTemplate(templateString, params), "-A[bce]D+");
 }
 
 int main(int argc, char** argv)

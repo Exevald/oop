@@ -158,7 +158,7 @@ std::string GetStringToAdd(const TemplateParams& params, const std::string& foun
 }
 } // namespace
 
-std::string ExpandTemplate(const std::string& tpl, const TemplateParams& params)
+std::string ExpandTemplate(const std::string& templateString, const TemplateParams& params)
 {
 	Bohr bohr{ BohrVertex() };
 	std::string resultString;
@@ -166,22 +166,22 @@ std::string ExpandTemplate(const std::string& tpl, const TemplateParams& params)
 	AddParamsInBohr(bohr, params);
 
 	size_t vertexPos = 0;
-	auto lastCopiedPos = tpl.begin();
+	auto lastCopiedPos = templateString.begin();
 
-	for (auto it = tpl.begin(); it != tpl.end(); ++it)
+	for (auto it = templateString.begin(); it != templateString.end(); ++it)
 	{
 		vertexPos = GetAutoMove(bohr, vertexPos, *it);
 
 		if (CheckIfFound(bohr, vertexPos))
 		{
-			vertexPos = ReadUntilIsParam(bohr, vertexPos, tpl, it);
+			vertexPos = ReadUntilIsParam(bohr, vertexPos, templateString, it);
 			resultString += GetStringToAdd(params, bohr[vertexPos].fullString, lastCopiedPos, it);
 			vertexPos = 0;
 			lastCopiedPos = it + 1;
 		}
 	}
 
-	resultString += std::string(lastCopiedPos, tpl.end());
+	resultString += std::string(lastCopiedPos, templateString.end());
 
 	return resultString;
 }
