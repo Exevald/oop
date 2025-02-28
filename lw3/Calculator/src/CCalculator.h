@@ -7,8 +7,8 @@
 #include <string>
 #include <unordered_map>
 
-using VariablesMap = std::map<std::string, CVariable>;
-using FunctionsMap = std::map<std::string, CFunction>;
+using VariablesMap = std::map<std::string, std::shared_ptr<CVariable>>;
+using FunctionsMap = std::map<std::string, std::shared_ptr<CFunction>>;
 
 class CCalculator
 {

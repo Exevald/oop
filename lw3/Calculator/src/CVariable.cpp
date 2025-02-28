@@ -26,11 +26,8 @@ void CVariable::CalculateValue()
 
 Id CVariable::RegisterObserver(const std::shared_ptr<IObserver>& observer)
 {
-	std::cout << "OBSERVERS COUNT: " << m_observers.size() << std::endl;
 	auto nextObserverId = CVariable::GetNextObserverId();
-	std::cout << "NEXT ID: " << nextObserverId << std::endl;
 	m_observers.emplace(nextObserverId, observer);
-	std::cout << "OBSERVERS COUNT AFTER: " << m_observers.size() << std::endl;
 
 	return nextObserverId;
 }
@@ -42,7 +39,8 @@ void CVariable::RemoveObserver(Id observerId)
 
 void CVariable::NotifyObservers()
 {
-	for (const auto& [_, observer] : m_observers)
+	auto observersCopy = m_observers;
+	for (const auto& [_, observer] : observersCopy)
 	{
 		observer->Update();
 	}
@@ -50,7 +48,8 @@ void CVariable::NotifyObservers()
 
 Id CVariable::GetNextObserverId()
 {
-	return m_observers.size() + 1;
+	static Id nextId = 0;
+	return ++nextId;
 }
 
 std::unordered_set<std::shared_ptr<IObservable>> CVariable::GetValueDependencies()

@@ -74,20 +74,16 @@ void CFunction::InitDependencies()
 	auto leftOperandDependencies = m_leftOperand->GetValueDependencies();
 	auto rightOperandDependencies = m_rightOperand->GetValueDependencies();
 
-	m_dependencies.reserve(leftOperandDependencies.size() + rightOperandDependencies.size());
-	m_dependencies = std::move(leftOperandDependencies);
-	m_dependencies.merge(std::move(rightOperandDependencies));
+	m_dependencies.insert(leftOperandDependencies.begin(), leftOperandDependencies.end());
+	m_dependencies.insert(rightOperandDependencies.begin(), rightOperandDependencies.end());
 }
 
 void CFunction::SubscribeToDependencies()
 {
 	CFunction::InitDependencies();
 
-	std::cout << "DEPENDENCIES COUNT: " << m_dependencies.size() << std::endl;
-
 	for (const auto& dep : m_dependencies)
 	{
-		auto obs = shared_from_this();
-		dep->RegisterObserver(obs);
+		dep->RegisterObserver(shared_from_this());
 	}
 }

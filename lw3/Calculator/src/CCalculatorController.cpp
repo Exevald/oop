@@ -48,7 +48,7 @@ void CCalculatorController::PrintAvailableVariables() const
 
 	for (const auto& variableInfo : m_calculator.GetAvailableVariables())
 	{
-		std::string variableValue = variableInfo.second.HasValue() ? std::to_string(*variableInfo.second.GetValue()) : "nan";
+		std::string variableValue = variableInfo.second->HasValue() ? std::to_string(*variableInfo.second->GetValue()) : "nan";
 		m_output << variableInfo.first << ":" << std::fixed << std::setprecision(2) << variableValue << std::endl;
 	}
 }
@@ -60,7 +60,7 @@ void CCalculatorController::PrintAvailableFunctions() const
 
 	for (const auto& functionInfo : m_calculator.GetAvailableFunctions())
 	{
-		std::string functionValue = functionInfo.second.HasValue() ? std::to_string(*functionInfo.second.GetValue()) : "nan";
+		std::string functionValue = functionInfo.second->HasValue() ? std::to_string(*functionInfo.second->GetValue()) : "nan";
 		m_output << functionInfo.first << ":" << std::fixed << std::setprecision(2) << functionValue << std::endl;
 	}
 }
@@ -96,7 +96,7 @@ void CCalculatorController::DefineVariable()
 	std::string name;
 	m_input >> name;
 
-	if (IsIdentifierCorrect(name))
+	if (CCalculatorController::IsIdentifierCorrect(name))
 	{
 		m_calculator.DefineVariable(name);
 	}

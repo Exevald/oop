@@ -88,11 +88,18 @@ TEST(CalculatorController, TestFunctionDefinition)
 {
 	CalculatorControllerTestMiddleware testMiddleware;
 
-	testMiddleware.AssertCommandHandling("var radius", "");
-	testMiddleware.AssertCommandHandling("fn radiusSquared=radius*radius", "");
-	testMiddleware.AssertCommandHandling("printfns", "radiusSquared:nan\n");
 	testMiddleware.AssertCommandHandling("let radius=2", "");
+	testMiddleware.AssertCommandHandling("fn radiusSquared=radius*radius", "");
 	testMiddleware.AssertCommandHandling("printfns", "radiusSquared:4.000000\n");
+	testMiddleware.AssertCommandHandling("let radius=5", "");
+	testMiddleware.AssertCommandHandling("printfns", "radiusSquared:25.000000\n");
+
+	testMiddleware.AssertCommandHandling("fn radiusKube=radiusSquared*radius", "");
+	testMiddleware.AssertCommandHandling("printfns", "radiusKube:125.000000\n"
+													 "radiusSquared:25.000000\n");
+	testMiddleware.AssertCommandHandling("let radius=4", "");
+	testMiddleware.AssertCommandHandling("printfns", "radiusKube:100.000000\n"
+													 "radiusSquared:16.000000\n");
 }
 
 int main(int argc, char** argv)

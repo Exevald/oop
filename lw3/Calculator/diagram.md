@@ -19,8 +19,8 @@ classDiagram
     }
 
     class CCalculator {
-        -map~string, CVariable~ m_variablesMap
-        -map~string, CVariable~ m_functionsMap
+        -map~string, shared_ptr~CVariable~ m_variablesMap
+        -map~string, shared_ptr~CFunction~ m_functionsMap
         +DefineVariable(identifier: string)
         +UpdateVariable(identifier: string, value: double): void
         +DefineFunction(identifier: string, operand: string): void
