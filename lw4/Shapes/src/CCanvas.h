@@ -14,7 +14,5 @@ public:
 	void FillCircle(CPoint center, double radius, uint32_t fillColor, uint32_t outlineColor) const override;
 
 private:
-	static std::string Uint32ToHexString(uint32_t value);
-
 	sf::RenderWindow& m_window;
 };

@@ -57,10 +57,3 @@ void CCanvas::FillCircle(CPoint center, double radius, uint32_t fillColor, uint3
 
 	m_window.draw(circle);
 }
-
-std::string CCanvas::Uint32ToHexString(uint32_t value)
-{
-	std::stringstream ss;
-	ss << std::hex << std::setw(6) << std::setfill('0') << value;
-	return ss.str();
-}

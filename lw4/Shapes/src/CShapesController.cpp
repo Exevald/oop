@@ -167,6 +167,16 @@ IShape* CShapesController::GetMinPerimeterShape() const
 
 uint32_t CShapesController::StringToUint32(const std::string& value)
 {
-	return static_cast<uint32_t>(std::stoul(value, nullptr, 16));
+	if (value.length() != 6)
+	{
+		throw std::invalid_argument("Invalid color format. Expected 6-character HEX string.");
+	}
 
+	uint32_t color = std::stoul(value, nullptr, 16);
+
+	uint8_t r = (color >> 16) & 0xFF;
+	uint8_t g = (color >> 8) & 0xFF;
+	uint8_t b = color & 0xFF;
+
+	return sf::Color(r, g, b).toInteger();
 }
