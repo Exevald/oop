@@ -7,16 +7,18 @@ CTriangle::CTriangle(CPoint vertex1, CPoint vertex2, CPoint vertex3, uint32_t fi
 	, m_vertex2(vertex2)
 	, m_vertex3(vertex3)
 {
-}
-
-double CTriangle::GetArea() const
-{
 	auto matrixDeterminant = (m_vertex1.x - m_vertex3.x) * (m_vertex2.y - m_vertex3.y)
 		- (m_vertex2.x - m_vertex3.x) * (m_vertex1.y - m_vertex3.y);
 	if (matrixDeterminant == 0)
 	{
 		throw std::invalid_argument("Invalid triangle coordinates");
 	}
+}
+
+double CTriangle::GetArea() const
+{
+	auto matrixDeterminant = (m_vertex1.x - m_vertex3.x) * (m_vertex2.y - m_vertex3.y)
+		- (m_vertex2.x - m_vertex3.x) * (m_vertex1.y - m_vertex3.y);
 
 	return matrixDeterminant > 0 ? 0.5 * matrixDeterminant : -0.5 * matrixDeterminant;
 }
@@ -25,7 +27,7 @@ double CTriangle::GetPerimeter() const
 {
 	const auto line1Length = GetLineLength(m_vertex1, m_vertex2);
 	const auto line2Length = GetLineLength(m_vertex2, m_vertex3);
-	const auto line3Length = GetLineLength(m_vertex1, m_vertex1);
+	const auto line3Length = GetLineLength(m_vertex3, m_vertex1);
 
 	return line1Length + line2Length + line3Length;
 }

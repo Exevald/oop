@@ -48,11 +48,11 @@ void CShapesController::PrintResult()
 		m_output << "Shapes are not exist" << std::endl;
 		return;
 	}
-	m_output << "Shape with max area:" << std::endl;
+	m_output << "Shape with max circleArea:" << std::endl;
 	CShapesController::PrintShape(CShapesController::GetMaxAreaShape());
 
 	m_output << std::endl
-			 << "Shape with min perimeter:" << std::endl;
+			 << "Shape with min circlePerimeter:" << std::endl;
 	CShapesController::PrintShape(CShapesController::GetMinPerimeterShape());
 }
 
@@ -140,7 +140,7 @@ void CShapesController::PrintShape(const IShape* shape)
 IShape* CShapesController::GetMaxAreaShape() const
 {
 	auto result = std::max_element(m_shapes.begin(), m_shapes.end(), [](auto& a, auto& b) {
-		return a->GetArea() > b->GetArea();
+		return a->GetArea() < b->GetArea();
 	});
 
 	if (result != m_shapes.end())

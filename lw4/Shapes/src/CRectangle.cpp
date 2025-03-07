@@ -1,11 +1,17 @@
 #include "CRectangle.h"
+#include <iostream>
 
 CRectangle::CRectangle(CPoint coordinates, double width, double height, uint32_t fillColor, uint32_t outlineColor)
 	: CSolidShape(fillColor, outlineColor)
 	, m_coordinates(coordinates)
-	, m_width(width)
-	, m_height(height)
 {
+	if (width < 0 || height < 0)
+	{
+		throw std::invalid_argument("invalid rectangle size");
+	}
+
+	m_width = width;
+	m_height = height;
 }
 
 double CRectangle::GetArea() const

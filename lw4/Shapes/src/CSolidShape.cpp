@@ -1,4 +1,5 @@
 #include "CSolidShape.h"
+#include <iostream>
 
 CSolidShape::CSolidShape(uint32_t fillColor, uint32_t outlineColor)
 	: CShape(outlineColor)
@@ -13,5 +14,5 @@ uint32_t CSolidShape::GetFillColor() const
 
 uint32_t CSolidShape::GetOutlineColor() const
 {
-	return m_outlineColor;
+	return CShape::GetOutlineColor();
 }
