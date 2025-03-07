@@ -1,4 +1,3 @@
-cmake_minimum_required(VERSION 3.27)
 project(calculator_lib)
 
 add_library(calculator_lib STATIC
