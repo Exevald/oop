@@ -8,7 +8,6 @@ find_package(GTest REQUIRED)
 
 enable_testing()
 
-add_subdirectory(lw2/ParseURL)
-add_subdirectory(lw2/ExpandTemplate)
-add_subdirectory(lw3/Calculator)
+add_subdirectory(lw2)
+add_subdirectory(lw3)
 add_subdirectory(lw4/Shapes)
