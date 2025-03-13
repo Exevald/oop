@@ -60,6 +60,11 @@ TEST(Date, TestAdditionOperator)
 	ASSERT_EQ(newDate.GetDay(), 1);
 	ASSERT_EQ(newDate.GetMonth(), Month::MARCH);
 	ASSERT_EQ(newDate.GetYear(), 2020);
+
+	newDate += 2;
+	ASSERT_EQ(newDate.GetDay(), 3);
+	newDate -= 2;
+	ASSERT_EQ(newDate.GetDay(), 1);
 }
 
 TEST(Date, TestSubtractionOperator)

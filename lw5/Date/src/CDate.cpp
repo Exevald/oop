@@ -1,6 +1,83 @@
 #include "CDate.h"
 #include <limits>
 
+namespace
+{
+bool IsLeapYear(unsigned year)
+{
+	return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+}
+
+unsigned GetDaysInMonth(Month month, unsigned year)
+{
+	switch (month)
+	{
+	case Month::FEBRUARY:
+		return IsLeapYear(year) ? 29 : 28;
+	case Month::APRIL:
+	case Month::JUNE:
+	case Month::SEPTEMBER:
+	case Month::NOVEMBER:
+		return 30;
+	default:
+		return 31;
+	}
+}
+
+void ConvertTimestampToDate(unsigned& day, Month& month, unsigned& year, unsigned timestamp)
+{
+	unsigned remainingDays = timestamp;
+	year = 1970;
+
+	while (true)
+	{
+		unsigned daysInYear = IsLeapYear(year) ? 366 : 365;
+		if (remainingDays < daysInYear)
+		{
+			break;
+		}
+		remainingDays -= daysInYear;
+		++year;
+	}
+
+	month = Month::JANUARY;
+	while (true)
+	{
+		unsigned daysInCurrentMonth = GetDaysInMonth(month, year);
+		if (remainingDays < daysInCurrentMonth)
+		{
+			break;
+		}
+		remainingDays -= daysInCurrentMonth;
+		month = static_cast<Month>(static_cast<unsigned>(month) + 1);
+	}
+
+	day = remainingDays + 1;
+}
+
+unsigned ConvertDateToTimestamp(unsigned day, Month month, unsigned year)
+{
+	if (year < 1970 || year > 9999 || month < Month::JANUARY || month > Month::DECEMBER || day < 1 || day > GetDaysInMonth(month, year))
+	{
+		return -1;
+	}
+
+	unsigned totalDays = 0;
+	for (unsigned y = 1970; y < year; ++y)
+	{
+		totalDays += IsLeapYear(y) ? 366 : 365;
+	}
+
+	for (unsigned m = 1; m < static_cast<unsigned>(month); ++m)
+	{
+		totalDays += GetDaysInMonth(static_cast<Month>(m), year);
+	}
+
+	totalDays += day - 1;
+	return totalDays;
+}
+} // namespace
+
 CDate::CDate(unsigned day, Month month, unsigned year)
 {
 	unsigned timestamp = ConvertDateToTimestamp(day, month, year);
@@ -46,7 +123,7 @@ CDate CDate::operator++(int)
 
 CDate& CDate::operator--()
 {
-	if (IsValid() && m_timestamp > 0)
+	if (IsValid())
 	{
 		--m_timestamp;
 	}
@@ -67,7 +144,7 @@ CDate CDate::operator+(int days) const
 
 CDate CDate::operator-(int days) const
 {
-	return CDate(m_timestamp >= days ? m_timestamp - days : 0);
+	return CDate(m_timestamp - days);
 }
 
 int CDate::operator-(const CDate& other) const
@@ -123,7 +200,7 @@ std::istream& operator>>(std::istream& stream, CDate& date)
 	stream >> day >> sep1 >> month >> sep2 >> year;
 	if (sep1 == '.' && sep2 == '.')
 	{
-		date.m_timestamp = CDate::ConvertDateToTimestamp(day, static_cast<Month>(month), year);
+		date.m_timestamp = ConvertDateToTimestamp(day, static_cast<Month>(month), year);
 	}
 	else
 	{
@@ -139,7 +216,7 @@ bool CDate::operator==(const CDate& date) const
 
 bool CDate::operator!=(const CDate& date) const
 {
-	return m_timestamp != date.m_timestamp;
+	return !(*this == date);
 }
 
 bool CDate::operator>(const CDate& date) const
@@ -149,24 +226,24 @@ bool CDate::operator>(const CDate& date) const
 
 bool CDate::operator<(const CDate& date) const
 {
-	return m_timestamp < date.m_timestamp;
+	return !(*this > date);
 }
 
 bool CDate::operator>=(const CDate& date) const
 {
-	return m_timestamp >= date.m_timestamp;
+	return !(*this < date);
 }
 
 bool CDate::operator<=(const CDate& date) const
 {
-	return m_timestamp <= date.m_timestamp;
+	return !(*this > date);
 }
 
 unsigned CDate::GetDay() const
 {
 	unsigned day, year;
 	Month month;
-	ConvertTimestampToDate(day, month, year);
+	ConvertTimestampToDate(day, month, year, m_timestamp);
 	return day;
 }
 
@@ -174,7 +251,7 @@ Month CDate::GetMonth() const
 {
 	unsigned day, year;
 	Month month;
-	ConvertTimestampToDate(day, month, year);
+	ConvertTimestampToDate(day, month, year, m_timestamp);
 	return month;
 }
 
@@ -182,7 +259,7 @@ unsigned CDate::GetYear() const
 {
 	unsigned day, year;
 	Month month;
-	ConvertTimestampToDate(day, month, year);
+	ConvertTimestampToDate(day, month, year, m_timestamp);
 	return year;
 }
 
@@ -199,81 +276,7 @@ bool CDate::IsValid() const
 {
 	unsigned day, year;
 	Month month;
-	ConvertTimestampToDate(day, month, year);
+	ConvertTimestampToDate(day, month, year, m_timestamp);
 
 	return year >= 1970 && year <= 9999 && month >= Month::JANUARY && month <= Month::DECEMBER && day >= 1 && day <= GetDaysInMonth(month, year);
-}
-
-bool CDate::IsLeapYear(unsigned year)
-{
-	return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
-}
-
-unsigned CDate::GetDaysInMonth(Month month, unsigned year)
-{
-	switch (month)
-	{
-	case Month::FEBRUARY:
-		return IsLeapYear(year) ? 29 : 28;
-	case Month::APRIL:
-	case Month::JUNE:
-	case Month::SEPTEMBER:
-	case Month::NOVEMBER:
-		return 30;
-	default:
-		return 31;
-	}
-}
-
-void CDate::ConvertTimestampToDate(unsigned& day, Month& month, unsigned& year) const
-{
-	unsigned remainingDays = m_timestamp;
-	year = 1970;
-
-	while (true)
-	{
-		unsigned daysInYear = IsLeapYear(year) ? 366 : 365;
-		if (remainingDays < daysInYear)
-		{
-			break;
-		}
-		remainingDays -= daysInYear;
-		++year;
-	}
-
-	month = Month::JANUARY;
-	while (true)
-	{
-		unsigned daysInCurrentMonth = GetDaysInMonth(month, year);
-		if (remainingDays < daysInCurrentMonth)
-		{
-			break;
-		}
-		remainingDays -= daysInCurrentMonth;
-		month = static_cast<Month>(static_cast<unsigned>(month) + 1);
-	}
-
-	day = remainingDays + 1;
-}
-
-unsigned CDate::ConvertDateToTimestamp(unsigned day, Month month, unsigned year)
-{
-	if (year < 1970 || year > 9999 || month < Month::JANUARY || month > Month::DECEMBER || day < 1 || day > GetDaysInMonth(month, year))
-	{
-		return -1;
-	}
-
-	unsigned totalDays = 0;
-	for (unsigned y = 1970; y < year; ++y)
-	{
-		totalDays += IsLeapYear(y) ? 366 : 365;
-	}
-
-	for (unsigned m = 1; m < static_cast<unsigned>(month); ++m)
-	{
-		totalDays += GetDaysInMonth(static_cast<Month>(m), year);
-	}
-
-	totalDays += day - 1;
-	return totalDays;
 }

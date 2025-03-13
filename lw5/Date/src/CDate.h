@@ -67,10 +67,5 @@ public:
 	[[nodiscard]] bool IsValid() const;
 
 private:
-	static bool IsLeapYear(unsigned year);
-	static unsigned GetDaysInMonth(Month month, unsigned year);
-	void ConvertTimestampToDate(unsigned& day, Month& month, unsigned& year) const;
-	static unsigned ConvertDateToTimestamp(unsigned day, Month month, unsigned year);
-
 	unsigned m_timestamp = 0;
 };
