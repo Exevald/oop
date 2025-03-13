@@ -11,17 +11,10 @@ CBank::CBank(Money cash)
 
 void CBank::SendMoney(AccountId srcAccountId, AccountId dstAccountId, Money amount)
 {
-	ValidateAmount(amount);
-	auto srcAccount = GetAccount(srcAccountId);
-	auto dstAccount = GetAccount(dstAccountId);
-
-	if (srcAccount->second < amount)
+	if (!TrySendMoney(srcAccountId, dstAccountId, amount))
 	{
 		throw BankOperationError("Insufficient funds in source account: " + std::to_string(srcAccountId));
 	}
-
-	srcAccount->second -= amount;
-	dstAccount->second += amount;
 }
 
 bool CBank::TrySendMoney(AccountId srcAccountId, AccountId dstAccountId, Money amount)
