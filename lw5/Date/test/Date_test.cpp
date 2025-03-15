@@ -63,8 +63,9 @@ TEST(Date, TestAdditionOperator)
 
 	newDate += 2;
 	ASSERT_EQ(newDate.GetDay(), 3);
-	newDate -= 2;
-	ASSERT_EQ(newDate.GetDay(), 1);
+	newDate -= 3;
+	ASSERT_EQ(newDate.GetDay(), 29);
+	ASSERT_EQ(newDate.GetMonth(), Month::FEBRUARY);
 }
 
 TEST(Date, TestSubtractionOperator)
@@ -100,6 +101,10 @@ TEST(Date, TestInputOutputOperator)
 TEST(Date, TestDatesComparing)
 {
 	CDate date1(12, Month::MARCH, 2025);
+	ASSERT_FALSE(date1 < date1);
+	ASSERT_FALSE(date1 > date1);
+	ASSERT_TRUE(date1 == date1);
+
 	CDate date2(12, Month::APRIL, 2025);
 	ASSERT_TRUE(date2 > date1);
 	ASSERT_TRUE(date2 >= date1);
@@ -110,6 +115,8 @@ TEST(Date, TestDatesComparing)
 
 	CDate date4(12, Month::MARCH, 2025);
 	ASSERT_TRUE(date1 == date4);
+	ASSERT_FALSE(date1 < date4);
+	ASSERT_FALSE(date1 > date4);
 }
 
 int main(int argc, char** argv)

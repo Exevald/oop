@@ -226,7 +226,7 @@ bool CDate::operator>(const CDate& date) const
 
 bool CDate::operator<(const CDate& date) const
 {
-	return !(*this > date);
+	return m_timestamp < date.m_timestamp;
 }
 
 bool CDate::operator>=(const CDate& date) const
