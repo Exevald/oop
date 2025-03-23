@@ -44,6 +44,8 @@ public:
 	void Clear();
 
 private:
+	CString(size_t length, size_t capacity, const char* data);
+
 	char* m_data;
 	size_t m_length;
 	size_t m_capacity;

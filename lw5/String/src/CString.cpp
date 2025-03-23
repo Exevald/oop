@@ -40,25 +40,13 @@ CString::CString(const char* pString, size_t length)
 }
 
 CString::CString(const CString& other)
-	: m_length(other.m_length)
-	, m_capacity(other.m_capacity)
+	: CString(other.m_length, other.m_capacity, other.m_data)
 {
-	if (other.m_data)
-	{
-		m_data = new char[m_capacity];
-		std::memcpy(m_data, other.m_data, m_length);
-		m_data[m_length] = '\0';
-	}
-	else
-	{
-		m_data = nullptr;
-	}
 }
 
 CString::CString(CString&& other) noexcept
-	: m_data(other.m_data)
-	, m_length(other.m_length)
-	, m_capacity(other.m_capacity)
+	: CString(other.m_length, other.m_capacity, other.m_data)
+
 {
 	other.m_data = nullptr;
 	other.m_length = 0;
@@ -239,4 +227,16 @@ void CString::Clear()
 size_t CString::GetCapacity() const
 {
 	return m_capacity;
+}
+
+CString::CString(size_t length, size_t capacity, const char* data)
+	: m_length(length)
+	, m_capacity(capacity)
+	, m_data(nullptr)
+{
+	if (data)
+	{
+		m_data = AllocateMemory(m_capacity);
+		std::memcpy(m_data, data, m_length + 1);
+	}
 }
