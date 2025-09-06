@@ -1,5 +1,6 @@
 #pragma once
 
+#include <boost/scope_exit.hpp>
 #include <cassert>
 #include <functional>
 #include <list>
@@ -25,7 +26,7 @@ public:
 	Value* GetValueOrDefault(const Key& key, std::function<Value()> factory);
 
 private:
-	void UpdateIfKeyExists(const Key& key, const Value& value) noexcept;
+	void UpdateIfKeyExists(const Key& key, const Value& value);
 	void RemoveOverflowIfExists() noexcept;
 
 	size_t m_capacity;
@@ -127,6 +128,15 @@ void LRUCache<Key, Value>::Put(const Key& key, const Value& value)
 	UpdateIfKeyExists(key, value);
 	RemoveOverflowIfExists();
 	m_itemsList.emplace_front(key, value);
+
+	BOOST_SCOPE_EXIT_ALL(&)
+	{
+		if (!m_itemsMap.contains(key))
+		{
+			m_itemsList.pop_front();
+		}
+	};
+
 	m_itemsMap[key] = m_itemsList.begin();
 }
 
@@ -143,13 +153,23 @@ Value* LRUCache<Key, Value>::GetValueOrDefault(const Key& key, std::function<Val
 
 	RemoveOverflowIfExists();
 	m_itemsList.emplace_front(key, std::move(newValue));
-	m_itemsMap[key] = m_itemsList.begin();
 
+	bool commit = false;
+	BOOST_SCOPE_EXIT_ALL(&)
+	{
+		if (!commit)
+		{
+			m_itemsList.pop_front();
+		}
+	};
+
+	m_itemsMap[key] = m_itemsList.begin();
+	commit = true;
 	return &m_itemsList.begin()->second;
 }
 
 template <typename Key, typename Value>
-void LRUCache<Key, Value>::UpdateIfKeyExists(const Key& key, const Value& value) noexcept
+void LRUCache<Key, Value>::UpdateIfKeyExists(const Key& key, const Value& value)
 {
 	auto it = m_itemsMap.find(key);
 	if (it != m_itemsMap.end())
